@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../../assets/images/4.png";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -8,6 +8,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import Modal from "../ForgetPassModal/Modal";
 
 export default function Login({saveAdminData}) {
+  const [centredModal, setCentredModal] = useState(false);
+  const toggleOpen = () => setCentredModal(!centredModal);
   const navigate = useNavigate();
   const {
     register, //btsheel el values ui inputs
@@ -77,9 +79,12 @@ export default function Login({saveAdminData}) {
                     Register now?
                   </label>
                 </div>
-                <a href="#!" className="text-success">
-                  Forgot password?
-                </a>
+                <Modal centredModal={centredModal} setCentredModal={setCentredModal} toggleOpen={toggleOpen}>
+                 
+                  {/* <a onClick={toggleOpen} className="text-success">
+                    Forgot password?
+                  </a> */}
+                </Modal>
               </div>
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">Login</button>

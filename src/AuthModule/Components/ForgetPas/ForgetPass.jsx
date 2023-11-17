@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
-import Modal from "../ForgetPassModal/Modal";
 
 export default function ForgetPass() {
-  const [centredModal, setCentredModal] = useState(false);
-  const toggleOpen = () => setCentredModal(!centredModal);
   const {
     register, //btsheel el values ui inputs
     handleSubmit, //integration
@@ -104,12 +101,6 @@ export default function ForgetPass() {
                 <div className="form-check mb-0">
                   <label className="form-check-label">Register now?</label>
                 </div>
-                <Modal centredModal={centredModal} setCentredModal={setCentredModal} toggleOpen={toggleOpen}>
-                 
-                  {/* <a onClick={toggleOpen} className="text-success">
-                    Forgot password?
-                  </a> */}
-                </Modal>
               </div>
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">
