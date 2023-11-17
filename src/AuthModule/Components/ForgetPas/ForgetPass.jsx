@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
+import Modal from "../ForgetPassModal/Modal";
+
 export default function ForgetPass() {
+  const [centredModal, setCentredModal] = useState(false);
+  const toggleOpen = () => setCentredModal(!centredModal);
   const {
     register, //btsheel el values ui inputs
     handleSubmit, //integration
     formState: { errors }, //errors
   } = useForm();
-
   const onSubmit = (data) => {
     console.log(data);
     axios
@@ -17,22 +20,25 @@ export default function ForgetPass() {
         "http://upskilling-egypt.com:3002/api/v1/Users/ChangePassword",
         data,
         {
-          headers:{
+          headers: {
             Authorization: `Bearer ${localStorage.getItem("AdminToken")}`,
           },
         }
-      ) 
+      )
       .then((response) => {
         console.log(data);
         navigate("/login"); //to home screen
       })
       .catch((error) => {
-        toast(error.response?.data?.message || 'An error occurred. Please try again.');
+        toast(
+          error.response?.data?.message ||
+            "An error occurred. Please try again."
+        );
       });
   };
   return (
     <div className="Auth-container container-fluid">
-         <ToastContainer />
+      <ToastContainer />
       <div className="row bg-overlay vh-100 justify-content-center align-items-center">
         <div className="col-md-6">
           <div className="bg-white rounded p-3">
@@ -96,13 +102,14 @@ export default function ForgetPass() {
               </div>
               <div className="d-flex justify-content-between align-items-center">
                 <div className="form-check mb-0">
-                  <label className="form-check-label" >
-                    Register now?
-                  </label>
+                  <label className="form-check-label">Register now?</label>
                 </div>
-                <a  href="#!" className="text-success">
-                  Forgot password?
-                </a>
+                <Modal centredModal={centredModal} setCentredModal={setCentredModal} toggleOpen={toggleOpen}>
+                 
+                  {/* <a onClick={toggleOpen} className="text-success">
+                    Forgot password?
+                  </a> */}
+                </Modal>
               </div>
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">

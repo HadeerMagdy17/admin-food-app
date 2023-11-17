@@ -55,6 +55,7 @@ function App() {
         { path: "login", element: <Login saveAdminData={saveAdminData} /> },
         { path: "forget-password", element: <ForgetPass /> },
         { path: "reset-password", element: <ResetPass /> },
+        
       ],
     },
   ]);
