@@ -3,8 +3,10 @@ import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export default function ResetPass() {
+  const navigate=useNavigate()
     const {
         register, //btsheel el values ui inputs
         handleSubmit, //integration
@@ -13,23 +15,40 @@ export default function ResetPass() {
     
       const onSubmit = (data) => {
         console.log(data);
-        // axios
-        //   .put(
-        //     "http://upskilling-egypt.com:3002/api/v1/Users/ChangePassword",
-        //     data,
-        //     {
-        //       headers:{
-        //         Authorization: `Bearer ${localStorage.getItem("AdminToken")}`,
-        //       },
-        //     }
-        //   ) 
-        //   .then((response) => {
-        //     console.log(data);
-        //     navigate("/login"); //to home screen
-        //   })
-        //   .catch((error) => {
-        //     toast(error.response?.data?.message || 'An error occurred. Please try again.');
-        //   });
+        axios
+        .post("http://upskilling-egypt.com:3002/api/v1/Users/Reset", data)
+        .then((response) => {
+          console.log(data);
+          navigate("/login");
+  
+          setTimeout(()=>{
+              toast.success(response?.message ||"Password changed successfully", {
+                  position: "top-right",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+              })
+          })
+        })
+        .catch((error) => {
+          toast.error(
+            error.response?.data?.message ||
+              "An error occurred. Please try again.", {
+                  position: "top-right",
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+              }
+          );
+        });
       };
   return (
     <div className="Auth-container container-fluid">
@@ -118,6 +137,7 @@ export default function ResetPass() {
            </button>
          </div>
        </form>
+
      </div>
    </div>
  </div>
