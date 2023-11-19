@@ -2,21 +2,11 @@ import React, { useState } from "react";
 import logo from "../../../assets/images/4.png";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { useNavigate,Link } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import ResetPassRequest from "../ResetPassRequest/ResetPassRequest";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-
-export default function Login({saveAdminData}) {
- 
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
+export default function Login({ saveAdminData }) {
   const navigate = useNavigate();
   const {
     register, //btsheel el values ui inputs
@@ -28,59 +18,47 @@ export default function Login({saveAdminData}) {
     axios
       .post("http://upskilling-egypt.com:3002/api/v1/Users/Login", data)
       .then((response) => {
-        localStorage.setItem("adminToken",response.data.token);
+        localStorage.setItem("adminToken", response.data.token);
         saveAdminData();
         navigate("/dashboard"); //to home screen
 
-        setTimeout(()=>{
-          toast.success("Login successfully", {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-          })
-      })
+        toast.success("Login successfully", {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       })
       .catch((error) => {
         toast.error(
           error.response?.data?.message ||
-            "An error occurred. Please try again.", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            }
+            "An error occurred. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
         );
       });
   };
 
   return (
     <div className="Auth-container container-fluid">
-        <ToastContainer />
-   
       <div className="row bg-overlay vh-100 justify-content-center align-items-center">
         <div className="col-md-6">
           <div className="bg-white rounded p-3">
             <div className="logo-cont  text-center">
               <img src={logo} alt="logo" />
             </div>
-     {/* modal */}
-     <Modal show={show} onHide={handleClose}>
-       
-       <Modal.Body>
-         <ResetPassRequest/>
-       </Modal.Body>
-     
-     </Modal>
-       {/* //modal */}
             <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h2>Log In</h2>
               <p>Welcome Back! Please enter your details</p>
@@ -116,12 +94,11 @@ export default function Login({saveAdminData}) {
               </div>
               <div className="d-flex justify-content-between align-items-center">
                 <div className="form-check mb-0">
-                  <label className="form-check-label" for="form2Example3">
-                    Register now?
-                  </label>
+                  <label className="form-check-label">Register now?</label>
                 </div>
-                <Link onClick={handleShow} className="text-success">Forgot password?</Link>
-              
+                <Link to="/reset-password-request" className="text-success">
+                  Forgot password?
+                </Link>
               </div>
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">Login</button>

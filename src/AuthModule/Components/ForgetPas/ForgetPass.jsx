@@ -2,9 +2,9 @@ import React from "react";
 import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 
-export default function ForgetPass() {
+export default function ForgetPass({handleClose}) {
   const {
     register, //btsheel el values ui inputs
     handleSubmit, //integration
@@ -24,7 +24,21 @@ export default function ForgetPass() {
       )
       .then((response) => {
         console.log(data);
-        navigate("/login"); //to home screen
+        handleClose();
+        navigate("/login"); 
+        toast.success(
+          response?.data?.message || "password changed successfully",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
       })
       .catch((error) => {
         toast(
@@ -34,11 +48,11 @@ export default function ForgetPass() {
       });
   };
   return (
-    <div className="Auth-container container-fluid">
-      <ToastContainer />
-      <div className="row bg-overlay vh-100 justify-content-center align-items-center">
-        <div className="col-md-6">
-          <div className="bg-white rounded p-3">
+    <div className=" container-fluid">
+      
+      <div className="row  justify-content-center align-items-center">
+        <div className="col-md-10">
+          <div className="bg-white rounded ">
             <div className="logo-cont  text-center">
               <img src={logo} alt="logo" />
             </div>
@@ -97,11 +111,7 @@ export default function ForgetPass() {
                     </span>
                   )}
               </div>
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="form-check mb-0">
-                  <label className="form-check-label">Register now?</label>
-                </div>
-              </div>
+           
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">
                   Change Password

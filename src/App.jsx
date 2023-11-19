@@ -14,6 +14,7 @@ import { jwtDecode } from "jwt-decode";
 import PotectedRoute from "./SharedModule/Components/ProtectedRoute/PotectedRoute";
 import ResetPass from "./AuthModule/Components/ResetPass/ResetPass";
 import ResetPassRequest from "./AuthModule/Components/ResetPassRequest/ResetPassRequest";
+import { ToastContainer } from "react-toastify";
 
 function App() {
   const [adminData, setAdminData] = useState(null);
@@ -56,14 +57,14 @@ function App() {
         { path: "login", element: <Login saveAdminData={saveAdminData} /> },
         { path: "forget-password", element: <ForgetPass /> },
         { path: "reset-password", element: <ResetPass /> },
-        // { path: "reset-password-request", element: <ResetPassRequest /> },
+        { path: "reset-password-request", element: <ResetPassRequest /> },
         
       ],
     },
   ]);
 
   return (
-    <>
+    <> <ToastContainer />
       <RouterProvider router={routes} />
     </>
   );

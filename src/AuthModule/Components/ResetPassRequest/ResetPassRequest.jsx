@@ -2,7 +2,7 @@ import React from "react";
 import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
 export default function ResetPassRequest() {
@@ -21,42 +21,42 @@ export default function ResetPassRequest() {
         console.log(data);
         navigate("/reset-password");
 
-        setTimeout(()=>{
-            toast.success(response?.data?.message||"Code sent to your mail please check", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            })
-        })
+        toast.success(
+          response?.data?.message || "Code sent to your mail please check",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
       })
       .catch((error) => {
         toast.error(
           error.response?.data?.message ||
-            "An error occurred. Please try again.", {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-            }
+            "An error occurred. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
         );
       });
   };
   return (
-    
-     
-      <div className="row  justify-content-center align-items-center">
-         <ToastContainer />
-        <div className="col-md-10">
-          <div className="bg-white rounded ">
+    <div className="Auth-container container-fluid">
+      <div className="row bg-overlay vh-100  justify-content-center align-items-center">
+        <div className="col-md-6">
+          <div className="bg-white rounded p-3">
             <div className="logo-cont  text-center">
               <img src={logo} alt="logo" />
             </div>
@@ -89,6 +89,6 @@ export default function ResetPassRequest() {
           </div>
         </div>
       </div>
-   
+    </div>
   );
 }
