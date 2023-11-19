@@ -1,10 +1,10 @@
-import React from "react";
-import logo from "../../../assets/images/4.png";
-import axios from "axios";
-import { useForm } from "react-hook-form";
-import {  toast } from "react-toastify";
+import React from 'react';
+import logo from '../../../assets/images/4.png';
+import axios from 'axios';
+import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 
-export default function ForgetPass({handleClose}) {
+export default function ForgetPass({ handleClose }) {
   const {
     register, //btsheel el values ui inputs
     handleSubmit, //integration
@@ -14,42 +14,43 @@ export default function ForgetPass({handleClose}) {
     console.log(data);
     axios
       .put(
-        "http://upskilling-egypt.com:3002/api/v1/Users/ChangePassword",
+        'http://upskilling-egypt.com:3002/api/v1/Users/ChangePassword',
         data,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("AdminToken")}`,
+            //You name the adminToken key when you set it "adminToken" not "AdminToken"
+            // Authorization: `Bearer ${localStorage.getItem('AdminToken')}`,
+            Authorization: `Bearer ${localStorage.getItem('adminToken')}`,
           },
         }
       )
       .then((response) => {
         console.log(data);
         handleClose();
-        navigate("/login"); 
+        navigate('/login');
         toast.success(
-          response?.data?.message || "password changed successfully",
+          response?.data?.message || 'password changed successfully',
           {
-            position: "top-right",
+            position: 'top-right',
             autoClose: 3000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "colored",
+            theme: 'colored',
           }
         );
       })
       .catch((error) => {
         toast(
           error.response?.data?.message ||
-            "An error occurred. Please try again."
+            'An error occurred. Please try again.'
         );
       });
   };
   return (
     <div className=" container-fluid">
-      
       <div className="row  justify-content-center align-items-center">
         <div className="col-md-10">
           <div className="bg-white rounded ">
@@ -66,12 +67,12 @@ export default function ForgetPass({handleClose}) {
                   placeholder="old password"
                   className="form-control my-3"
                   type="password"
-                  {...register("oldPassword", {
+                  {...register('oldPassword', {
                     required: true,
                   })}
                 />
                 {errors.oldPassword &&
-                  errors.oldPassword.type === "required" && (
+                  errors.oldPassword.type === 'required' && (
                     <span className="text-danger my-1">
                       old password is required
                     </span>
@@ -83,12 +84,12 @@ export default function ForgetPass({handleClose}) {
                   placeholder="new password"
                   className="form-control my-3"
                   type="password"
-                  {...register("newPassword", {
+                  {...register('newPassword', {
                     required: true,
                   })}
                 />
                 {errors.newPassword &&
-                  errors.newPassword.type === "required" && (
+                  errors.newPassword.type === 'required' && (
                     <span className="text-danger my-1">
                       new password is required
                     </span>
@@ -100,18 +101,18 @@ export default function ForgetPass({handleClose}) {
                   placeholder="confirm New Password"
                   className="form-control my-3"
                   type="password"
-                  {...register("confirmNewPassword", {
+                  {...register('confirmNewPassword', {
                     required: true,
                   })}
                 />
                 {errors.confirmNewPassword &&
-                  errors.confirmNewPassword.type === "required" && (
+                  errors.confirmNewPassword.type === 'required' && (
                     <span className="text-danger my-1">
                       confirm new password is required
                     </span>
                   )}
               </div>
-           
+
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">
                   Change Password
