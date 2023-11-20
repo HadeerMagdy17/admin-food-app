@@ -96,7 +96,7 @@ export default function Login({ saveAdminData }) {
                 <div className="form-check mb-0">
                   <label className="form-check-label">Register now?</label>
                 </div>
-                <Link to="/reset-password-request" className="text-success">
+                <Link to="/reset-password-request" className="text-success text-decoration-none">
                   Forgot password?
                 </Link>
               </div>

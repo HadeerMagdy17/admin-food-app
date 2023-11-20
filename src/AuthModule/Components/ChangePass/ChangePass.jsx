@@ -4,7 +4,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import {  toast } from "react-toastify";
 
-export default function ForgetPass({handleClose}) {
+export default function ChangePass({handleClose}) {
   const {
     register, //btsheel el values ui inputs
     handleSubmit, //integration

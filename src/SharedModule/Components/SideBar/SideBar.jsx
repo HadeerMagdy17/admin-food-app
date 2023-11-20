@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import logo from "../../../assets/images/3.png";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import Modal from "react-bootstrap/Modal";
-import ForgetPass from "../../../AuthModule/Components/ForgetPas/ForgetPass";
+import ChangePass from "../../../AuthModule/Components/ChangePass/ChangePass";
 export default function SideBar() {
   // modal
   const [show, setShow] = useState(false);
@@ -60,7 +60,7 @@ export default function SideBar() {
           {/* modal */}
           <Modal show={show} onHide={handleClose}>
             <Modal.Body>
-              <ForgetPass handleClose={handleClose} />
+              <ChangePass handleClose={handleClose} />
             </Modal.Body>
           </Modal>
           {/* //modal */}

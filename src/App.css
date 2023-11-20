@@ -16,3 +16,9 @@ color: #fff;
 .sidebar-container .ps-sidebar-container .ps-menu-button:hover{
 background-color: rgba(0, 146, 71, 0.1);
 }
+.header-content{
+    background-image: url(./assets/images/heade-bg.png);
+}
+.home-sec{
+    background-color: rgba(240, 255, 239, 1);
+}
