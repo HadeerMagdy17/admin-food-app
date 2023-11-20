@@ -20,7 +20,7 @@ export default function Navbar({adminData}) {
           </li>
         <li className="nav-item text-white">
          
-          <a className="nav-link" href="#">{adminData.userName}</a>
+          <a className="nav-link" href="#">{adminData?.userName}</a>
         </li>
     
       </ul>

@@ -1,24 +1,49 @@
-import React from "react";
-import SideBar from "./../SideBar/SideBar";
-import { Outlet } from "react-router-dom";
-import Navbar from "../Navbar/Navbar.jsx";
-import Header from "../Header/Header.jsx";
+// import React from "react";
+// import SideBar from "./../SideBar/SideBar";
+// import { Outlet } from "react-router-dom";
+// import Navbar from "../Navbar/Navbar.jsx";
+// import Header from "../Header/Header.jsx";
 
-export default function MasterLayout({adminData}) {
+// export default function MasterLayout({adminData}) {
+//   return (
+//     <>
+//       <div className="container-fluid">
+//         <div className="row">
+//           <div className="col-md-2">
+//             <SideBar />
+//           </div>
+//           <div className="col-md-10">
+//             <Navbar adminData={adminData}/>
+//             <Header/>
+//             <Outlet />
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// }
+import React from 'react';
+import SideBar from './../SideBar/SideBar';
+import { Outlet } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar.jsx';
+import Header from '../Header/Header.jsx';
+import styles from './MasterLayout.module.css';
+
+export default function MasterLayout({ adminData }) {
   return (
-    <>
-      <div className="container-fluid">
-        <div className="row">
-          <div className="col-md-2">
-            <SideBar />
-          </div>
-          <div className="col-md-10">
-            <Navbar adminData={adminData}/>
-            <Header/>
-            <Outlet />
-          </div>
+    <div className={styles.container}>
+      <div className={styles.sidebar}>
+        <SideBar />
+      </div>
+      <div className={styles.content}>
+        <div className={styles.header}>
+          <Navbar adminData={adminData} />
+          <Header />
+        </div>
+        <div className={styles.body}>
+          <Outlet />
         </div>
       </div>
-    </>
+    </div>
   );
 }
