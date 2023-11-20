@@ -18,14 +18,13 @@ export default function ForgetPass({handleClose}) {
         data,
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("AdminToken")}`,
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
           },
         }
       )
       .then((response) => {
         console.log(data);
         handleClose();
-        navigate("/login"); 
         toast.success(
           response?.data?.message || "password changed successfully",
           {
