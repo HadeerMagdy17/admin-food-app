@@ -12,7 +12,7 @@ export default function ResetPass() {
     handleSubmit, //integration
     formState: { errors }, //errors
   } = useForm();
-
+ //****************to reset******************
   const onSubmit = (data) => {
     console.log(data);
     axios
@@ -24,11 +24,6 @@ export default function ResetPass() {
         toast.success(response?.message || "Password changed successfully", {
           position: "top-right",
           autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "colored",
         });
       })
@@ -39,11 +34,6 @@ export default function ResetPass() {
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );

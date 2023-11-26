@@ -5,11 +5,13 @@ import { useForm } from "react-hook-form";
 import {  toast } from "react-toastify";
 
 export default function ChangePass({handleClose}) {
+   //****************use form to validate**********
   const {
     register, //btsheel el values ui inputs
     handleSubmit, //integration
     formState: { errors }, //errors
   } = useForm();
+   //****************to change password******************
   const onSubmit = (data) => {
     console.log(data);
     axios

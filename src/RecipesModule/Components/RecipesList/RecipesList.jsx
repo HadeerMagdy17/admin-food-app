@@ -14,7 +14,6 @@ export default function RecipesList() {
   let [itemId, setItemId] = useState(0);
   let [categoriesList, setCategoriesList] = useState([]);
   let [tagList, setTagList] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
   //*****************validation using useform***********************
   let {
     register,
@@ -28,10 +27,12 @@ export default function RecipesList() {
   const [modalState, setModalState] = useState("close");
 
   const showAddModal = () => {
+    getCategoryList();
+    getAllTags();
     reset();
-    setValue("tagId",null)
-    setValue("categoriesIds",null)
-    setValue("recipeImage",null)
+    setValue("tagId", null);
+    setValue("categoriesIds", null);
+    setValue("recipeImage", null);
     setModalState("add-modal");
   };
 
@@ -100,12 +101,6 @@ export default function RecipesList() {
       });
   };
 
-  //****************upload image function********************
-  const handleImageChange = (e) => {
-    console.log(e.target.files[0]);
-    setSelectedImage(e.target.files[0]);
-    setValue("recipeImage",e.target.files[0])
-  };
   //****************delete Recipe****************************
   const deleteRecipe = () => {
     axios
@@ -150,7 +145,7 @@ export default function RecipesList() {
   const getAllRecipes = () => {
     axios
       .get(
-        "http://upskilling-egypt.com:3002/api/v1/Recipe/?pageSize=10&pageNumber=1",
+        "http://upskilling-egypt.com:3002/api/v1/Recipe/?pageSize=30&pageNumber=1",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -188,7 +183,6 @@ export default function RecipesList() {
         }
       )
       .then((response) => {
-       
         console.log(response);
         handleClose();
         getAllRecipes();
@@ -197,12 +191,10 @@ export default function RecipesList() {
           autoClose: 3000,
           theme: "colored",
         });
-        
-      
       })
       .catch((error) => {
         console.log(response);
-        
+
         toast.error(
           error?.response?.data?.message ||
             "An error occurred. Please try again.",
@@ -212,17 +204,12 @@ export default function RecipesList() {
             theme: "colored",
           }
         );
-        
       });
   };
 
   useEffect(() => {
-    getCategoryList();
-    getAllTags();
-  }, []);
-  useEffect(() => {
     getAllRecipes();
-  });
+  }, []);
   return (
     <>
       <Header>
@@ -277,7 +264,7 @@ export default function RecipesList() {
               <select
                 className="form-select"
                 aria-label="Default select example"
-                {...register("tagId", { required: true })}
+                {...register("tagId", { required: true, valueAsNumber: true })}
               >
                 {tagList?.map((tag) => (
                   <option key={tag?.id} value={tag?.id}>
@@ -294,7 +281,7 @@ export default function RecipesList() {
               <select
                 className="form-select my-1"
                 aria-label="Default select example"
-                {...register("categoriesIds")}
+                {...register("categoriesIds", { valueAsNumber: true })}
               >
                 {categoriesList.map((category) => (
                   <option key={category.id} value={category.id}>
@@ -335,25 +322,12 @@ export default function RecipesList() {
                 <input
                   type="file"
                   className="form-control my-1 "
-                  id="customFile"
                   {...register("recipeImage")}
-                  onChange={handleImageChange}
                 />
-            
-                {selectedImage && (
-                  <div>
-                    <img
-                      alt="not found"
-                      width={"50px"}
-                      src={URL.createObjectURL(selectedImage)}
-                    />
-                
-                  </div>
-                )}
               </div>
 
               <div className="text-end">
-                <button  className="btn btn-success  my-3">Add Recipe</button>
+                <button className="btn btn-success  my-3">Add Recipe</button>
               </div>
             </form>
           </Modal.Body>
@@ -398,9 +372,9 @@ export default function RecipesList() {
               </tr>
             </thead>
             <tbody>
-              {recipesList.map((recipe) => (
+              {recipesList.map((recipe, index) => (
                 <tr key={recipe?.id}>
-                  <th scope="row">{recipe?.id}</th>
+                  <th scope="row">{index + 1}</th>
                   <td>{recipe?.name}</td>
                   <td>
                     <div className="rec-image-container">

@@ -5,21 +5,24 @@ import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import Modal from "react-bootstrap/Modal";
 import ChangePass from "../../../AuthModule/Components/ChangePass/ChangePass";
 export default function SideBar() {
-  // modal
+  //********** */ modal*******************
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  //sidebar collapse
+
+  //*************sidebar collapse***************
   let [isCollapsed, setIsCollapsed] = useState(false);
   let handleToggle = () => {
     setIsCollapsed(!isCollapsed);
   };
+  //*************to navigate to another page**********
   let navigate = useNavigate();
+  //*************to logout**************
   let logOut = () => {
     localStorage.removeItem("adminToken");
     navigate("/login");
   };
+
   return (
     <div className="sidebar-container">
       <Sidebar className="vh-100" collapsed={isCollapsed}>
@@ -40,9 +43,7 @@ export default function SideBar() {
             Users
           </MenuItem>
           <MenuItem
-            icon={<i className="fa-solid fa-utensils"></i>
-            
-          }
+            icon={<i className="fa-solid fa-utensils"></i>}
             component={<Link to="/dashboard/recipes" />}
           >
             Recipes

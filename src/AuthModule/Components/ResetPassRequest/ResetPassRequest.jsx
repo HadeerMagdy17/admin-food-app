@@ -13,6 +13,8 @@ export default function ResetPassRequest() {
     formState: { errors }, //errors
   } = useForm();
 
+ //****************to request reset******************
+
   const onSubmit = (data) => {
     console.log(data);
     axios
@@ -20,17 +22,11 @@ export default function ResetPassRequest() {
       .then((response) => {
         console.log(data);
         navigate("/reset-password");
-
         toast.success(
           response?.data?.message || "Code sent to your mail please check",
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );
@@ -42,11 +38,6 @@ export default function ResetPassRequest() {
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );

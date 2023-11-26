@@ -17,8 +17,10 @@ import { ToastContainer } from "react-toastify";
 import ChangePass from "./AuthModule/Components/ChangePass/ChangePass";
 
 function App() {
+   //*************control admin data state***********
   const [adminData, setAdminData] = useState(null);
 
+   //**************save admin data *********************
   let saveAdminData = () => {
     let encodedToken = localStorage.getItem("adminToken");
     let decodedToken = jwtDecode(encodedToken);
@@ -31,7 +33,7 @@ function App() {
       saveAdminData(); //call
     }
   }, []);
-
+ //*************Routing******************
   const routes = createBrowserRouter([
     {
       path: "dashboard",
