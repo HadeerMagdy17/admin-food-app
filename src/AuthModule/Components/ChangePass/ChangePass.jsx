@@ -41,7 +41,7 @@ export default function ChangePass({handleClose}) {
       })
       .catch((error) => {
         toast(
-          error.response?.data?.message ||
+          error?.response?.data?.message ||
             "An error occurred. Please try again."
         );
       });

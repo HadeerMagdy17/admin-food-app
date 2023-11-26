@@ -40,7 +40,9 @@ export default function SideBar() {
             Users
           </MenuItem>
           <MenuItem
-            icon={<i className="fa-solid fa-building-columns"></i>}
+            icon={<i className="fa-solid fa-utensils"></i>
+            
+          }
             component={<Link to="/dashboard/recipes" />}
           >
             Recipes

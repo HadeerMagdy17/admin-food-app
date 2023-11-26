@@ -22,3 +22,6 @@ background-color: rgba(0, 146, 71, 0.1);
 .home-sec{
     background-color: rgba(240, 255, 239, 1);
 }
+.rec-image-container{
+    width: 30px;
+}

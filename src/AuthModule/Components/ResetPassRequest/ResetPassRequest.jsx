@@ -37,7 +37,7 @@ export default function ResetPassRequest() {
       })
       .catch((error) => {
         toast.error(
-          error.response?.data?.message ||
+          error?.response?.data?.message ||
             "An error occurred. Please try again.",
           {
             position: "top-right",

@@ -3,23 +3,128 @@ import Header from "../../../SharedModule/Components/Header/Header";
 import headerImg from "../../../assets/images/head1.png";
 import Modal from "react-bootstrap/Modal";
 import axios from "axios";
+import noData from "../../../assets/images/nodata.png";
 import NoData from "../../../SharedModule/Components/NoData/NoData";
+import {  toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 export default function CategoriesList() {
   let [categoriesList, setCategoriesList] = useState([]);
+  let [itemId, setItemId] = useState(0);
 
-  // modal
-  const [show, setShow] = useState(false);
+  // //**************** to use more than one modal in same component**********
+  const [modalState, setModalState] = useState("close");
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-  //validation using useform
+  const showAddModal = () => {
+    setValue("name",null)
+    setModalState("add-modal");
+  };
+
+  const showDeleteModal = (id) => {
+    setItemId(id);
+    setModalState("delete-modal");
+  };
+  const showUpdateModal = (categoryObj) => {
+    setItemId(categoryObj.id);
+    setValue("name",categoryObj.name)
+    setModalState("update-modal");
+  };
+  const handleClose = () => setModalState("close");
+
+ //****************delete category ***************************
+
+  const deleteCategory = () => {
+    axios.delete(`http://upskilling-egypt.com:3002/api/v1/Category/${itemId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    }
+    ).then((response)=>{
+      console.log(response);
+      handleClose();
+      getCategoryList();
+      toast.success(
+        response?.data?.message || "category deleted successfully",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }
+      );
+    
+    }).catch((error)=>{console.log(error)
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }
+      );
+    })
+  };
+ //****************update category**********************
+  const updateCategory=(data)=>{
+    axios.put(`http://upskilling-egypt.com:3002/api/v1/Category/${itemId}`,data,
+    {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+      },
+    }
+    ).then((response)=>{
+      console.log(response);
+      handleClose();
+      getCategoryList();
+      toast.success(
+        response?.data?.message || "category updated successfully",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }
+      );
+    
+    }).catch((error)=>{console.log(error)
+      toast.error(
+        error?.response?.data?.message ||
+          "An error occurred. Please try again.",
+        {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        }
+      );})
+  }
+
+  // //****************validation using useform**************
   let {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm();
-  //api integration add categ
+  // //****************api integration add categ*************
   let onSubmit = (data) => {
     console.log(data);
     axios
@@ -30,31 +135,72 @@ export default function CategoriesList() {
       })
       .then((response) => {
         handleClose();
-        getCategoryList()
+        getCategoryList();
+        toast.success(
+          response?.data?.message || "category added successfully",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
       })
       .catch((error) => {
         console.log(error);
+        toast.error(
+          error?.response?.data?.message ||
+            "An error occurred. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          }
+        );
       });
   };
-  ///////////////////////
-  const getCategoryList=()=>{
-        //get categ
-        axios
-        .get(
-          "http://upskilling-egypt.com:3002/api/v1/Category/?pageSize=10&pageNumber=1",
+ //****************get all category************************
+  const getCategoryList = () => {
+    //get categ
+    axios
+      .get(
+        "http://upskilling-egypt.com:3002/api/v1/Category/?pageSize=10&pageNumber=1",
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+        }
+      )
+      .then((response) => {
+        setCategoriesList(response?.data?.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(
+          error?.response?.data?.message ||
+            "An error occurred. Please try again.",
           {
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-            },
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
           }
-        )
-        .then((response) => {
-          setCategoriesList(response?.data?.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-  }
+        );
+      });
+  };
   useEffect(() => {
     //btcall data of categories
     getCategoryList();
@@ -86,12 +232,12 @@ export default function CategoriesList() {
           <p>You can check all details</p>
         </div>
         <div className="col-md-6 text-end">
-          <button onClick={handleShow} className="btn btn-success">
+          <button onClick={showAddModal} className="btn btn-success">
             Add new Category
           </button>
         </div>
-        {/* modal */}
-        <Modal show={show} onHide={handleClose}>
+        {/* **************** add modal************************** */}
+        <Modal show={modalState == "add-modal"} onHide={handleClose}>
           <Modal.Header closeButton>
             <h3>Add Category</h3>
           </Modal.Header>
@@ -113,7 +259,56 @@ export default function CategoriesList() {
             </form>
           </Modal.Body>
         </Modal>
-        {/* //modal */}
+        {/* //add modal */}
+
+           {/* ****************update modal *****************/}
+           <Modal show={modalState == "update-modal"} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <h3>Update Category</h3>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Welcome Back! Please enter your details</p>
+            <form onSubmit={handleSubmit(updateCategory)}>
+              <div className="form-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Enter category name"
+                  {...register("name", { required: true })}
+                />
+                {errors.name && errors.name.type === "required" && (
+                  <span className="m-2 text-danger">field is required</span>
+                )}
+              </div>
+              <button className="btn btn-success w-100 my-3">update</button>
+            </form>
+          </Modal.Body>
+        </Modal>
+        {/***************** //update modal *****************/}
+        {/* ****************delete modal **************** */}
+        <Modal show={modalState == "delete-modal"} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <h3>delete this Category?</h3>
+          </Modal.Header>
+          <Modal.Body>
+            <div className="text-center">
+              <img src={noData} />
+              <p>
+                are you sure you want to delete this item ? if you are sure just
+                click on delete it
+              </p>
+            </div>
+            <div className="text-end">
+              <button
+                onClick={deleteCategory}
+                className="btn btn-outline-danger  my-3"
+              >
+                Delete this item
+              </button>
+            </div>
+          </Modal.Body>
+        </Modal>
+        {/* ****************delete modal *****************/}
 
         <div>
           {categoriesList.length > 0 ? (
@@ -128,9 +323,16 @@ export default function CategoriesList() {
               <tbody>
                 {categoriesList.map((category) => (
                   <tr key={category?.id}>
-                    <th scope="row">{category.id}</th>
+                    <th scope="row">{category?.id}</th>
                     <td>{category.name}</td>
-                    <td></td>
+                    <td>
+                      <i onClick={()=>showUpdateModal(category)}
+                       className="fa fa-edit fa-2x text-warning px-2"></i>
+                      <i
+                        onClick={()=>showDeleteModal(category.id)}
+                        className="fa fa-trash fa-2x text-danger"
+                      ></i>
+                    </td>
                   </tr>
                 ))}
               </tbody>
