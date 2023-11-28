@@ -16,7 +16,7 @@ export default function Login({ saveAdminData }) {
  //****************to login******************
   const onSubmit = (data) => {
     axios
-      .post("http://upskilling-egypt.com:3002/api/v1/Users/Login", data)
+      .post("https://upskilling-egypt.com:443/api/v1/Users/Login", data)
       .then((response) => {
         localStorage.setItem("adminToken", response.data.token);
         saveAdminData();
@@ -62,8 +62,11 @@ export default function Login({ saveAdminData }) {
             <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h2>Log In</h2>
               <p>Welcome Back! Please enter your details</p>
-              <div className="form-group my-3">
-                <input
+
+
+
+              <div className="form-group  my-3">
+               <input
                   placeholder="enter your email"
                   className="form-control "
                   type="email"
@@ -71,6 +74,7 @@ export default function Login({ saveAdminData }) {
                     required: true,
                     pattern: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
                   })}
+                  
                 />
                 {errors.email && errors.email.type === "required" && (
                   <span className=" text-danger my-1">email is required</span>
@@ -78,6 +82,7 @@ export default function Login({ saveAdminData }) {
                 {errors.email && errors.email.type === "pattern" && (
                   <span className=" text-danger my-1">invalid email</span>
                 )}
+                {/* </div> */}
               </div>
               <div className="form-group my-3">
                 <input

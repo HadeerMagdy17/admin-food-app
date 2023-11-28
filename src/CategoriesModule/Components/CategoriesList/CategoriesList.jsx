@@ -33,7 +33,7 @@ export default function CategoriesList() {
  //****************delete category ***************************
 
   const deleteCategory = () => {
-    axios.delete(`http://upskilling-egypt.com:3002/api/v1/Category/${itemId}`,
+    axios.delete(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -71,7 +71,7 @@ export default function CategoriesList() {
   };
  //****************update category**********************
   const updateCategory=(data)=>{
-    axios.put(`http://upskilling-egypt.com:3002/api/v1/Category/${itemId}`,data,
+    axios.put(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`,data,
     {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -86,11 +86,6 @@ export default function CategoriesList() {
         {
           position: "top-right",
           autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "colored",
         }
       );
@@ -102,11 +97,6 @@ export default function CategoriesList() {
         {
           position: "top-right",
           autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "colored",
         }
       );})
@@ -123,7 +113,7 @@ export default function CategoriesList() {
   let onSubmit = (data) => {
     console.log(data);
     axios
-      .post("http://upskilling-egypt.com:3002/api/v1/Category/", data, {
+      .post("https://upskilling-egypt.com:443/api/v1/Category/", data, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -168,7 +158,7 @@ export default function CategoriesList() {
     //get categ
     axios
       .get(
-        "http://upskilling-egypt.com:3002/api/v1/Category/?pageSize=10&pageNumber=1",
+        "https://upskilling-egypt.com:443/api/v1/Category/?pageSize=10&pageNumber=1",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,

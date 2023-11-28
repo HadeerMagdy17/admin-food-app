@@ -9,6 +9,7 @@ import recipeAlt from "../../../assets/images/recipe.png";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 
+
 export default function RecipesList() {
   let [recipesList, setRecipesList] = useState([]);
   let [itemId, setItemId] = useState(0);
@@ -25,7 +26,7 @@ export default function RecipesList() {
 
   // **********to use more than one modal in same component**********
   const [modalState, setModalState] = useState("close");
-
+  // ********to show add modal*******************
   const showAddModal = () => {
     getCategoryList();
     getAllTags();
@@ -35,16 +36,28 @@ export default function RecipesList() {
     setValue("recipeImage", null);
     setModalState("add-modal");
   };
+  // ********to show delete modal*******************
 
   const showDeleteModal = (id) => {
     setItemId(id);
     setModalState("delete-modal");
   };
-  //  const showUpdateModal = (categoryObj) => {
-  //    setItemId(categoryObj.id);
-  //    setValue("name",categoryObj.name)
-  //    setModalState("update-modal");
-  //  };
+  // ********to show update modal*******************
+  const showUpdateModal = (item) => {
+    console.log(item);
+    getCategoryList();
+    getAllTags();
+    setValue("name", item?.id);
+    setValue("price", item?.price);
+    setValue("description", item?.description);
+    setValue("tagId", item?.tag?.id);
+    setValue("categoriesIds", item?.category[0]?.id);
+    setValue("imagePath", item?.imagePath);
+
+    setItemId(item.id);
+    setModalState("update-modal");
+  };
+  // ********to close modal*******************
   const handleClose = () => setModalState("close");
 
   //************* to get categories list *******************
@@ -52,7 +65,7 @@ export default function RecipesList() {
     //get categ
     axios
       .get(
-        "http://upskilling-egypt.com:3002/api/v1/Category/?pageSize=10&pageNumber=1",
+        "https://upskilling-egypt.com:443/api/v1/Category/?pageSize=10&pageNumber=1",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -79,7 +92,7 @@ export default function RecipesList() {
   const getAllTags = () => {
     //get tags
     axios
-      .get("http://upskilling-egypt.com:3002/api/v1/tag/", {
+      .get("https://upskilling-egypt.com:443/api/v1/tag/", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -104,7 +117,7 @@ export default function RecipesList() {
   //****************delete Recipe****************************
   const deleteRecipe = () => {
     axios
-      .delete(`http://upskilling-egypt.com:3002/api/v1/Recipe/${itemId}`, {
+      .delete(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
         },
@@ -140,12 +153,50 @@ export default function RecipesList() {
         );
       });
   };
+  // ************update recipe****************
+  const updateRecipe = (data) => {
+    console.log("update data",data);
+    // axios
+    //   .put(
+    //     `https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`,
+    //     { ...data, recipeImage: data?.recipeImage[0] },
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+    //         "Content-Type": "multipart/form-data",
+    //       },
+    //     }
+    //   )
+    //   .then((response) => {
+    //     console.log(response);
+    //     handleClose();
+    //     getAllRecipes();
+    //     toast.success(response?.data?.message || "Recipe updated successfully", {
+    //       position: "top-right",
+    //       autoClose: 3000,
+    //       theme: "colored",
+    //     });
+    //   })
+    //   .catch((error) => {
+    //     console.log(response);
+
+    //     toast.error(
+    //       error?.response?.data?.message ||
+    //         "An error occurred. Please try again.",
+    //       {
+    //         position: "top-right",
+    //         autoClose: 3000,
+    //         theme: "colored",
+    //       }
+    //     );
+    //   });
+  };
 
   //****************get all Recipe****************************
   const getAllRecipes = () => {
     axios
       .get(
-        "http://upskilling-egypt.com:3002/api/v1/Recipe/?pageSize=30&pageNumber=1",
+        "https://upskilling-egypt.com:443/api/v1/Recipe/?pageSize=30&pageNumber=1",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
@@ -169,11 +220,11 @@ export default function RecipesList() {
       });
   };
   //****************add new Recipe****************************
-  const onSubmit = (data) => {
+  const addRecipe = (data) => {
     console.log("add recipe obj", data);
     axios
       .post(
-        "http://upskilling-egypt.com:3002/api/v1/Recipe/",
+        "https://upskilling-egypt.com:443/api/v1/Recipe/",
         { ...data, recipeImage: data.recipeImage[0] },
         {
           headers: {
@@ -248,7 +299,7 @@ export default function RecipesList() {
           </Modal.Header>
           <Modal.Body>
             <p>Welcome Back! Please enter your details</p>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(addRecipe)}>
               <div className="form-group">
                 <input
                   className="form-control"
@@ -357,6 +408,102 @@ export default function RecipesList() {
           </Modal.Body>
         </Modal>
         {/************************* * //delete modal*************** */}
+        {/* ******************** update modal ***************************/}
+        <Modal show={modalState == "update-modal"} onHide={handleClose}>
+          <Modal.Header closeButton>
+            <h3>Update Recipe</h3>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Welcome Back! Please enter your details</p>
+            <form onSubmit={handleSubmit(updateRecipe)}>
+              <div className="form-group">
+                <input
+                  className="form-control"
+                  type="text"
+                  placeholder="Enter Recipe name"
+                  {...register("name", { required: true })}
+                />
+                {errors.name && errors.name.type === "required" && (
+                  <span className="m-2 text-danger">field is required</span>
+                )}
+              </div>
+              <label>Tag</label>
+              <select
+                className="form-select"
+                aria-label="Default select example"
+                {...register("tagId", { required: true, valueAsNumber: true })}
+              >
+                {tagList?.map((tag) => (
+                  <option key={tag?.id} value={tag?.id}>
+                    {tag?.name}
+                  </option>
+                ))}
+              </select>
+
+              {errors.tagId && errors.tagId.type === "required" && (
+                <span className="m-2 text-danger">field is required</span>
+              )}
+
+              <label>Category</label>
+              <select
+                className="form-select my-1"
+                aria-label="Default select example"
+                {...register("categoriesIds", { valueAsNumber: true })}
+              >
+                {categoriesList.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.id}
+                  </option>
+                ))}
+              </select>
+
+              <div className="form-group">
+                <input
+                  className="form-control my-2"
+                  type="number"
+                  placeholder="Price"
+                  {...register("price", { required: true })}
+                />
+                {errors.price && errors.price.type === "required" && (
+                  <span className="m-2 text-danger">field is required</span>
+                )}
+              </div>
+
+              <div className="form-group">
+                <textarea
+                  className="form-control"
+                  placeholder="description"
+                  id="w3review"
+                  name="w3review"
+                  rows="4"
+                  cols="50"
+                  {...register("description", { required: true })}
+                ></textarea>
+                {errors.description &&
+                  errors.description.type === "required" && (
+                    <span className="m-2 text-danger">field is required</span>
+                  )}
+              </div>
+
+              <div className="form-group ">
+                <input
+                  type="file"
+                  className="form-control my-1 "
+                  {...register("recipeImage")}
+                />
+                <img
+                  className="w-25"
+                  src={`https://upskilling-egypt.com:443/`+ recipesList?.imagePath}             
+               />
+              </div>
+
+              <div className="text-end">
+                <button className="btn btn-success  my-3">update Recipe</button>
+              </div>
+            </form>
+          </Modal.Body>
+        </Modal>
+        {/* //*****************update modal******************** */}
         {recipesList?.length > 0 ? (
           <table className="table">
             <thead className="table-head">
@@ -382,7 +529,7 @@ export default function RecipesList() {
                         <img
                           className="w-100"
                           src={
-                            `http://upskilling-egypt.com:3002/` +
+                            `https://upskilling-egypt.com:443/` +
                             recipe?.imagePath
                           }
                         />
@@ -397,7 +544,7 @@ export default function RecipesList() {
                   <td>{recipe?.tag?.name}</td>
                   <td>
                     <i
-                      // onClick={() => showUpdateModal(category)}
+                      onClick={() => showUpdateModal(recipe)}
                       className="fa fa-edit fa-2x text-warning px-2"
                     ></i>
                     <i
