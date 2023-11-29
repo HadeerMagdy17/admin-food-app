@@ -196,8 +196,8 @@ export default function CategoriesList() {
         <div className="header-content text-white rounded">
           <div className="row align-items-center  m-2 p-3">
             <div className="col-md-10">
-              <h3 className="mb-4">categories Items !</h3>
-              <p className="w-75">
+              <h3 className="px-4"><strong>Categories Items !</strong></h3>
+              <p className="w-75 px-4">
                 You can now add your items that any user can order it from the
                 Application and you can edit
               </p>
@@ -213,7 +213,7 @@ export default function CategoriesList() {
 
       <div className="row justify-content-between mx-4 p-3 ">
         <div className="col-md-6 px-4">
-          <h6>Categories Table Details</h6>
+          <h4><strong>Categories Table Details</strong></h4>
           <p>You can check all details</p>
         </div>
         <div className="col-md-6 text-end">
@@ -298,7 +298,7 @@ export default function CategoriesList() {
         <div>
           {categoriesList.length > 0 ? (
             <table className="table">
-              <thead className="table-head">
+              <thead className="table-head table-success">
                 <tr>
                   <th scope="col">#</th>
                   <th scope="col">Category Name</th>
@@ -307,15 +307,15 @@ export default function CategoriesList() {
               </thead>
               <tbody>
                 {categoriesList.map((category) => (
-                  <tr key={category?.id}>
+                  <tr key={category?.id}  className="table-light">
                     <th scope="row">{category?.id}</th>
                     <td>{category.name}</td>
                     <td>
                       <i onClick={()=>showUpdateModal(category)}
-                       className="fa fa-edit fa-2x text-warning px-2"></i>
+                       className="fa fa-edit  text-success px-2"></i>
                       <i
                         onClick={()=>showDeleteModal(category.id)}
-                        className="fa fa-trash fa-2x text-danger"
+                        className="fa fa-trash  text-danger"
                       ></i>
                     </td>
                   </tr>

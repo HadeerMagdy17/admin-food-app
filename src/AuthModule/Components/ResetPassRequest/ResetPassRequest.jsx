@@ -4,6 +4,8 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 
 export default function ResetPassRequest() {
   const navigate = useNavigate();
@@ -54,24 +56,30 @@ export default function ResetPassRequest() {
             <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h2>Request Reset Password</h2>
               <p>Please Enter Your Email And Check Your Inbox</p>
-
-              <div className="form-group my-3">
-                <input
-                  placeholder="Email"
-                  className="form-control "
+              {/* email input */}
+              <InputGroup className="mb-3">
+                <InputGroup.Text>
+                  <i className="fa-regular fa-envelope"></i>
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="enter your email"
                   type="email"
                   {...register("email", {
                     required: true,
                     pattern: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
                   })}
                 />
-                {errors.email && errors.email.type === "required" && (
-                  <span className=" text-danger my-1">email is required</span>
-                )}
-                {errors.email && errors.email.type === "pattern" && (
-                  <span className=" text-danger my-1">invalid email</span>
-                )}
-              </div>
+              </InputGroup>
+
+              {errors.email && errors.email.type === "required" && (
+                <span className=" text-danger my-1">email is required</span>
+              )}
+              {errors.email && errors.email.type === "pattern" && (
+                <span className=" text-danger my-1">invalid email</span>
+              )}
+              {/* //email input */}
+           
+      
 
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">Send</button>

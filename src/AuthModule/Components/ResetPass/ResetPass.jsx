@@ -1,18 +1,27 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 
 export default function ResetPass() {
+  // *************control show password***************************
+  const [showPass, setShowPass] = useState(false);
+  const clickHandler = () => {
+    setShowPass(!showPass);
+  };
+  // ********************************
+
   const navigate = useNavigate();
   const {
     register, //btsheel el values ui inputs
     handleSubmit, //integration
     formState: { errors }, //errors
   } = useForm();
- //****************to reset******************
+  //****************to reset******************
   const onSubmit = (data) => {
     console.log(data);
     axios
@@ -51,69 +60,107 @@ export default function ResetPass() {
             <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h2>Reset Password</h2>
               <p>Please Enter Your Otp or Check Your Inbox</p>
-              <div className="form-group my-3">
-                <input
-                  placeholder="Email"
-                  className="form-control "
+
+              {/* email input */}
+              <InputGroup className="mb-3">
+                <InputGroup.Text>
+                  <i className="fa-regular fa-envelope"></i>
+                </InputGroup.Text>
+                <Form.Control
+                  placeholder="enter your email"
                   type="email"
                   {...register("email", {
                     required: true,
                     pattern: /^[^@ ]+@[^@ ]+\.[^@ .]{2,}$/,
                   })}
                 />
-                {errors.email && errors.email.type === "required" && (
-                  <span className=" text-danger my-1">email is required</span>
-                )}
-                {errors.email && errors.email.type === "pattern" && (
-                  <span className=" text-danger my-1">invalid email</span>
-                )}
-              </div>
-              <div className="form-group my-3">
-                <input
+              </InputGroup>
+
+              {errors.email && errors.email.type === "required" && (
+                <span className=" text-danger my-1">email is required</span>
+              )}
+              {errors.email && errors.email.type === "pattern" && (
+                <span className=" text-danger my-1">invalid email</span>
+              )}
+              {/* //email input */}
+              {/* otp input */}
+              <InputGroup className="mb-3">
+                <InputGroup.Text>
+                  <i className="fa-solid fa-lock"></i>
+                </InputGroup.Text>
+                <Form.Control
                   placeholder="OTP"
-                  className="form-control my-3"
                   type="text"
                   {...register("seed", {
                     required: true,
                   })}
                 />
-                {errors.seed && errors.seed.type === "required" && (
-                  <span className="text-danger my-1">otp is required</span>
-                )}
-              </div>
+              </InputGroup>
+              {errors.seed && errors.seed.type === "required" && (
+                <span className="text-danger my-1">OTP is required</span>
+              )}
+              {/* //otp */}
 
-              <div className="form-group my-3">
-                <input
-                  placeholder="new password"
-                  className="form-control my-3"
+              {/* password input */}
+              <InputGroup className="mb-3">
+                <InputGroup.Text>
+                  <i className="fa-solid fa-key"></i>
+                </InputGroup.Text>
+                <Form.Control
                   type="password"
+                  name="password"
+                  placeholder="Password"
+                  aria-label="password"
+                  aria-describedby="password-input"
                   {...register("password", {
                     required: true,
                   })}
                 />
-                {errors.password && errors.password.type === "required" && (
-                  <span className="text-danger my-1">
-                    new password is required
-                  </span>
-                )}
-              </div>
 
-              <div className="form-group my-3">
-                <input
-                  placeholder="confirm New Password"
-                  className="form-control my-3"
+                <InputGroup.Text onClick={clickHandler}>
+                  {showPass ? (
+                    <i className="fa-regular fa-eye-slash"></i>
+                  ) : (
+                    <i className="fa-regular fa-eye"></i>
+                  )}
+                </InputGroup.Text>
+              </InputGroup>
+              {errors.password && errors.password.type === "required" && (
+                <span className="text-danger my-1">
+                  new password is required
+                </span>
+              )}
+              {/*//password input*/}
+              {/* confirm password  */}
+              <InputGroup className="mb-3">
+                <InputGroup.Text>
+                  <i className="fa-solid fa-key"></i>
+                </InputGroup.Text>
+                <Form.Control
                   type="password"
+                  placeholder="confirm New Password"
+                  aria-label="password"
+                  aria-describedby="password-input"
                   {...register("confirmPassword", {
                     required: true,
                   })}
                 />
-                {errors.confirmPassword &&
-                  errors.confirmPassword.type === "required" && (
-                    <span className="text-danger my-1">
-                      confirm new password is required
-                    </span>
+
+                <InputGroup.Text onClick={clickHandler}>
+                  {showPass ? (
+                    <i className="fa-regular fa-eye-slash"></i>
+                  ) : (
+                    <i className="fa-regular fa-eye"></i>
                   )}
-              </div>
+                </InputGroup.Text>
+              </InputGroup>
+              {errors.confirmPassword &&
+                errors.confirmPassword.type === "required" && (
+                  <span className="text-danger my-1">
+                    confirm new password is required
+                  </span>
+                )}
+              {/* //confirm password */}
 
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">

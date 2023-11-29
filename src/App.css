@@ -1,6 +1,10 @@
+html,body,.modal-content{
+   font-family: 'Montserrat', sans-serif;
+}
 .Auth-container{
     background-image: url(assets/images/auth-bg.png);
     background-size: cover;
+   font-family: 'Montserrat', sans-serif;
 }
 .bg-overlay{
     background: linear-gradient(to left,rgba(0,0,0,0.4),rgba(47,140,51,0.7));
@@ -18,10 +22,12 @@ background-color: rgba(0, 146, 71, 0.1);
 }
 .header-content{
     background-image: url(./assets/images/heade-bg.png);
+    background-size: cover;
 }
 .home-sec{
     background-color: rgba(240, 255, 239, 1);
 }
-.rec-image-container{
-    width: 30px;
+.rec-image-container, .image-container{
+    width: 35px;
+    
 }

@@ -9,12 +9,12 @@ import recipeAlt from "../../../assets/images/recipe.png";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 
-
 export default function RecipesList() {
   let [recipesList, setRecipesList] = useState([]);
   let [itemId, setItemId] = useState(0);
   let [categoriesList, setCategoriesList] = useState([]);
   let [tagList, setTagList] = useState([]);
+  // let [file, setFile] = useState();
   //*****************validation using useform***********************
   let {
     register,
@@ -36,6 +36,13 @@ export default function RecipesList() {
     setValue("recipeImage", null);
     setModalState("add-modal");
   };
+
+  // **********image preview**********
+  // function handleImgChange(e) {
+  //   console.log(e.target.files);
+  //   setFile(URL.createObjectURL(e.target.files[0]));
+  // }
+
   // ********to show delete modal*******************
 
   const showDeleteModal = (id) => {
@@ -47,7 +54,7 @@ export default function RecipesList() {
     console.log(item);
     getCategoryList();
     getAllTags();
-    setValue("name", item?.id);
+    setValue("name", item?.name);
     setValue("price", item?.price);
     setValue("description", item?.description);
     setValue("tagId", item?.tag?.id);
@@ -155,41 +162,44 @@ export default function RecipesList() {
   };
   // ************update recipe****************
   const updateRecipe = (data) => {
-    console.log("update data",data);
-    // axios
-    //   .put(
-    //     `https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`,
-    //     { ...data, recipeImage: data?.recipeImage[0] },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-    //         "Content-Type": "multipart/form-data",
-    //       },
-    //     }
-    //   )
-    //   .then((response) => {
-    //     console.log(response);
-    //     handleClose();
-    //     getAllRecipes();
-    //     toast.success(response?.data?.message || "Recipe updated successfully", {
-    //       position: "top-right",
-    //       autoClose: 3000,
-    //       theme: "colored",
-    //     });
-    //   })
-    //   .catch((error) => {
-    //     console.log(response);
+    console.log("update data", data);
+    axios
+      .put(
+        `https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`,
+        { ...data, recipeImage: data?.recipeImage[0] },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response);
+        handleClose();
+        getAllRecipes();
+        toast.success(
+          response?.data?.message || "Recipe updated successfully",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "colored",
+          }
+        );
+      })
+      .catch((error) => {
+        console.log(response);
 
-    //     toast.error(
-    //       error?.response?.data?.message ||
-    //         "An error occurred. Please try again.",
-    //       {
-    //         position: "top-right",
-    //         autoClose: 3000,
-    //         theme: "colored",
-    //       }
-    //     );
-    //   });
+        toast.error(
+          error?.response?.data?.message ||
+            "An error occurred. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "colored",
+          }
+        );
+      });
   };
 
   //****************get all Recipe****************************
@@ -267,8 +277,8 @@ export default function RecipesList() {
         <div className="header-content text-white rounded">
           <div className="row align-items-center  m-2 p-3">
             <div className="col-md-10">
-              <h3>Recipes Items</h3>
-              <p className="w-75">
+              <h3 className="px-4"><strong>Recipes Items</strong></h3>
+              <p className="w-75 px-4">
                 You can now add your items that any user can order it from the
                 Application and you can edit
               </p>
@@ -283,7 +293,7 @@ export default function RecipesList() {
       </Header>
       <div className="row justify-content-between mx-4 p-3 ">
         <div className="col-md-6 px-4">
-          <h6>Recipes Table Details</h6>
+          <h4><strong>Recipes Table Details</strong></h4>
           <p>You can check all details</p>
         </div>
         <div className="col-md-6 text-end">
@@ -311,12 +321,14 @@ export default function RecipesList() {
                   <span className="m-2 text-danger">field is required</span>
                 )}
               </div>
-              <label>Tag</label>
+
               <select
-                className="form-select"
+                className="form-select my-1"
                 aria-label="Default select example"
                 {...register("tagId", { required: true, valueAsNumber: true })}
               >
+                <option className="text-muted" value="">Choose Tag</option>
+
                 {tagList?.map((tag) => (
                   <option key={tag?.id} value={tag?.id}>
                     {tag?.name}
@@ -328,12 +340,12 @@ export default function RecipesList() {
                 <span className="m-2 text-danger">field is required</span>
               )}
 
-              <label>Category</label>
               <select
                 className="form-select my-1"
                 aria-label="Default select example"
                 {...register("categoriesIds", { valueAsNumber: true })}
               >
+                <option className="text-muted"  value="">Choose Category</option>
                 {categoriesList.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.id}
@@ -373,10 +385,11 @@ export default function RecipesList() {
                 <input
                   type="file"
                   className="form-control my-1 "
+                  // onChange={handleImgChange}
                   {...register("recipeImage")}
                 />
               </div>
-
+              {/* <img className="w-50" src={file} /> */}
               <div className="text-end">
                 <button className="btn btn-success  my-3">Add Recipe</button>
               </div>
@@ -493,8 +506,11 @@ export default function RecipesList() {
                 />
                 <img
                   className="w-25"
-                  src={`https://upskilling-egypt.com:443/`+ recipesList?.imagePath}             
-               />
+                  src={
+                    `https://upskilling-egypt.com:443/` + recipesList?.imagePath
+                  }
+                  alt="recipe image"
+                />
               </div>
 
               <div className="text-end">
@@ -506,7 +522,7 @@ export default function RecipesList() {
         {/* //*****************update modal******************** */}
         {recipesList?.length > 0 ? (
           <table className="table">
-            <thead className="table-head">
+            <thead className="table-head table-success">
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Recipe Name</th>
@@ -520,7 +536,7 @@ export default function RecipesList() {
             </thead>
             <tbody>
               {recipesList.map((recipe, index) => (
-                <tr key={recipe?.id}>
+                <tr key={recipe?.id} className="table-light">
                   <th scope="row">{index + 1}</th>
                   <td>{recipe?.name}</td>
                   <td>
@@ -545,11 +561,11 @@ export default function RecipesList() {
                   <td>
                     <i
                       onClick={() => showUpdateModal(recipe)}
-                      className="fa fa-edit fa-2x text-warning px-2"
+                      className="fa fa-edit  text-success px-2"
                     ></i>
                     <i
                       onClick={() => showDeleteModal(recipe.id)}
-                      className="fa fa-trash fa-2x text-danger"
+                      className="fa fa-trash  text-danger"
                     ></i>
                   </td>
                 </tr>

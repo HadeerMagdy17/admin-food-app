@@ -10,8 +10,8 @@ export default function Home() {
         <div className="header-content text-white rounded">
           <div className="row align-items-center  mx-2 px-3">
             <div className="col-md-9">
-              <h3>Welcome Upskilling !</h3>
-              <p className="w-75">
+              <h3 className="px-4"><strong>Welcome Upskilling !</strong></h3>
+              <p className="w-75 px-4">
                 This is a welcoming screen for the entry of the application ,
                 you can now see the options
               </p>
@@ -27,7 +27,7 @@ export default function Home() {
       <div className="row home-sec  rounded-2 m-4 p-4 align-items-center">
         <div className="col-md-6">
           <div>
-            <h4> Fill the recipes !</h4>
+            <h4><strong>Fill the recipes !</strong> </h4>
             <p>
               you can now fill the meals easily using the table and form , click
               here and sill it with the table !
@@ -39,8 +39,8 @@ export default function Home() {
            
            <button className="btn btn-success px-3">
            <Link to={"/dashboard/recipes"} className="text-white text-decoration-none">
-              Fill Recipes 
-              <i className="fa fa-arrow-right"></i>
+              Fill Recipes &nbsp;
+              <i className=" fa fa-arrow-right"></i>
               </Link>
               </button>
            
