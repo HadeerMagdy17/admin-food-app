@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
 
 export default function ResetPass() {
   // *************control show password***************************
@@ -13,7 +14,8 @@ export default function ResetPass() {
   const clickHandler = () => {
     setShowPass(!showPass);
   };
-  // ********************************
+     // *************preloader*******************
+ const [showLoading, setShowLoading] = useState(false);
 
   const navigate = useNavigate();
   const {
@@ -24,10 +26,12 @@ export default function ResetPass() {
   //****************to reset******************
   const onSubmit = (data) => {
     console.log(data);
+    setShowLoading(true);
     axios
       .post("https://upskilling-egypt.com:443/api/v1/Users/Reset", data)
       .then((response) => {
         console.log(data);
+        setShowLoading(false);
         navigate("/login");
 
         toast.success(response?.message || "Password changed successfully", {
@@ -46,9 +50,13 @@ export default function ResetPass() {
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
-  return (
+
+   return showLoading ? (
+    <PreLoader/>
+  ) : (
     <div className="Auth-container container-fluid">
       <div className="row bg-overlay vh-100 justify-content-center align-items-center">
         <div className="col-md-6">

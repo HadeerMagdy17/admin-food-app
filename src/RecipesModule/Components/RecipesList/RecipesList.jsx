@@ -8,8 +8,12 @@ import noData from "../../../assets/images/nodata.png";
 import recipeAlt from "../../../assets/images/recipe.png";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
 
 export default function RecipesList() {
+  // *************preloader*******************
+  const [showLoading, setShowLoading] = useState(false);
+
   let [recipesList, setRecipesList] = useState([]);
   let [itemId, setItemId] = useState(0);
   let [categoriesList, setCategoriesList] = useState([]);
@@ -123,6 +127,7 @@ export default function RecipesList() {
 
   //****************delete Recipe****************************
   const deleteRecipe = () => {
+    setShowLoading(true);
     axios
       .delete(`https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`, {
         headers: {
@@ -132,17 +137,13 @@ export default function RecipesList() {
       .then((response) => {
         console.log(response);
         handleClose();
+        setShowLoading(false);
         getAllRecipes();
         toast.success(
           response?.data?.message || "Recipe deleted successfully",
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );
@@ -158,11 +159,13 @@ export default function RecipesList() {
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
   // ************update recipe****************
   const updateRecipe = (data) => {
     console.log("update data", data);
+    setShowLoading(true);
     axios
       .put(
         `https://upskilling-egypt.com:443/api/v1/Recipe/${itemId}`,
@@ -177,6 +180,7 @@ export default function RecipesList() {
       .then((response) => {
         console.log(response);
         handleClose();
+        setShowLoading(false);
         getAllRecipes();
         toast.success(
           response?.data?.message || "Recipe updated successfully",
@@ -199,11 +203,13 @@ export default function RecipesList() {
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
 
   //****************get all Recipe****************************
   const getAllRecipes = () => {
+    setShowLoading(true);
     axios
       .get(
         "https://upskilling-egypt.com:443/api/v1/Recipe/?pageSize=30&pageNumber=1",
@@ -215,6 +221,7 @@ export default function RecipesList() {
       )
       .then((response) => {
         setRecipesList(response?.data?.data);
+        setShowLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -227,11 +234,13 @@ export default function RecipesList() {
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
   //****************add new Recipe****************************
   const addRecipe = (data) => {
     console.log("add recipe obj", data);
+    setShowLoading(true);
     axios
       .post(
         "https://upskilling-egypt.com:443/api/v1/Recipe/",
@@ -246,6 +255,7 @@ export default function RecipesList() {
       .then((response) => {
         console.log(response);
         handleClose();
+        setShowLoading(false);
         getAllRecipes();
         toast.success(response?.data?.message || "Recipe added successfully", {
           position: "top-right",
@@ -265,19 +275,25 @@ export default function RecipesList() {
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
 
   useEffect(() => {
     getAllRecipes();
   }, []);
-  return (
+
+  return showLoading ? (
+    <PreLoader />
+  ) : (
     <>
       <Header>
         <div className="header-content text-white rounded">
           <div className="row align-items-center  m-2 p-3">
             <div className="col-md-10">
-              <h3 className="px-4"><strong>Recipes Items</strong></h3>
+              <h3 className="px-4">
+                <strong>Recipes Items</strong>
+              </h3>
               <p className="w-75 px-4">
                 You can now add your items that any user can order it from the
                 Application and you can edit
@@ -293,7 +309,9 @@ export default function RecipesList() {
       </Header>
       <div className="row justify-content-between mx-4 p-3 ">
         <div className="col-md-6 px-4">
-          <h4><strong>Recipes Table Details</strong></h4>
+          <h4>
+            <strong>Recipes Table Details</strong>
+          </h4>
           <p>You can check all details</p>
         </div>
         <div className="col-md-6 text-end">
@@ -327,7 +345,9 @@ export default function RecipesList() {
                 aria-label="Default select example"
                 {...register("tagId", { required: true, valueAsNumber: true })}
               >
-                <option className="text-muted" value="">Choose Tag</option>
+                <option className="text-muted" value="">
+                  Choose Tag
+                </option>
 
                 {tagList?.map((tag) => (
                   <option key={tag?.id} value={tag?.id}>
@@ -345,7 +365,9 @@ export default function RecipesList() {
                 aria-label="Default select example"
                 {...register("categoriesIds", { valueAsNumber: true })}
               >
-                <option className="text-muted"  value="">Choose Category</option>
+                <option className="text-muted" value="">
+                  Choose Category
+                </option>
                 {categoriesList.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.id}

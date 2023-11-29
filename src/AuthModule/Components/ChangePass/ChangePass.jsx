@@ -1,19 +1,20 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
 
 export default function ChangePass({ handleClose }) {
-  // *************control show password***************************
+  // *************control show password**************
   const [showPass, setShowPass] = useState(false);
   const clickHandler = () => {
     setShowPass(!showPass);
   };
-  // ********************************
-
+ // *************preloader*******************
+ const [showLoading, setShowLoading] = useState(false);
   //****************use form to validate**********
   const {
     register, //btsheel el values ui inputs
@@ -22,6 +23,7 @@ export default function ChangePass({ handleClose }) {
   } = useForm();
   //****************to change password******************
   const onSubmit = (data) => {
+    setShowLoading(true);
     console.log(data);
     axios
       .put(
@@ -36,16 +38,12 @@ export default function ChangePass({ handleClose }) {
       .then((response) => {
         console.log(data);
         handleClose();
+        setShowLoading(false);
         toast.success(
           response?.data?.message || "password changed successfully",
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );
@@ -55,9 +53,13 @@ export default function ChangePass({ handleClose }) {
           error?.response?.data?.message ||
             "An error occurred. Please try again."
         );
+        setShowLoading(false);
       });
   };
-  return (
+
+   return showLoading ? (
+    <PreLoader/>
+  ) : (
     <div className=" container-fluid">
       <div className="row  justify-content-center align-items-center">
         <div className="col-md-10">
@@ -69,23 +71,6 @@ export default function ChangePass({ handleClose }) {
             <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h4 className="my-2">Change Your Password</h4>
               <p>Enter your details below</p>
-
-              {/* <div className="form-group my-3">
-                <input
-                  placeholder="old password"
-                  className="form-control my-3"
-                  type="password"
-                  {...register("oldPassword", {
-                    required: true,
-                  })}
-                />
-                {errors.oldPassword &&
-                  errors.oldPassword.type === "required" && (
-                    <span className="text-danger my-1">
-                      old password is required
-                    </span>
-                  )}
-              </div> */}
               {/*old password input */}
               <InputGroup className="mb-3">
                 <InputGroup.Text>
@@ -138,16 +123,15 @@ export default function ChangePass({ handleClose }) {
                   )}
                 </InputGroup.Text>
               </InputGroup>
-              {errors.newPassword &&
-                  errors.newPassword.type === "required" && (
-                    <span className="text-danger my-1">
-                      new password is required
-                    </span>
-                  )}
+              {errors.newPassword && errors.newPassword.type === "required" && (
+                <span className="text-danger my-1">
+                  new password is required
+                </span>
+              )}
               {/* //new password input */}
 
-{/* confirm new password */}
-<InputGroup className="mb-3">
+              {/* confirm new password */}
+              <InputGroup className="mb-3">
                 <InputGroup.Text>
                   <i className="fa-solid fa-key"></i>
                 </InputGroup.Text>
@@ -170,45 +154,12 @@ export default function ChangePass({ handleClose }) {
                 </InputGroup.Text>
               </InputGroup>
               {errors.confirmNewPassword &&
-                  errors.confirmNewPassword.type === "required" && (
-                    <span className="text-danger my-1">
-                      confirm new password is required
-                    </span>
-                  )}
-{/* //confirm new password */}
-              {/* <div className="form-group my-3">
-                <input
-                  placeholder="new password"
-                  className="form-control my-3"
-                  type="password"
-                  {...register("newPassword", {
-                    required: true,
-                  })}
-                />
-                {errors.newPassword &&
-                  errors.newPassword.type === "required" && (
-                    <span className="text-danger my-1">
-                      new password is required
-                    </span>
-                  )}
-              </div> */}
-
-              {/* <div className="form-group my-3">
-                <input
-                  placeholder="confirm New Password"
-                  className="form-control my-3"
-                  type="password"
-                  {...register("confirmNewPassword", {
-                    required: true,
-                  })}
-                />
-                {errors.confirmNewPassword &&
-                  errors.confirmNewPassword.type === "required" && (
-                    <span className="text-danger my-1">
-                      confirm new password is required
-                    </span>
-                  )}
-              </div> */}
+                errors.confirmNewPassword.type === "required" && (
+                  <span className="text-danger my-1">
+                    confirm new password is required
+                  </span>
+                )}
+              {/* //confirm new password */}
 
               <div className="form-group my-3">
                 <button className="btn btn-success w-100">

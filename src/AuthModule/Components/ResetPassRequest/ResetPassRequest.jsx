@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState} from "react";
 import logo from "../../../assets/images/4.png";
 import axios from "axios";
 import { useForm } from "react-hook-form";
@@ -6,8 +6,13 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 import InputGroup from "react-bootstrap/InputGroup";
+import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
 
 export default function ResetPassRequest() {
+
+   // *************preloader*******************
+ const [showLoading, setShowLoading] = useState(false);
+
   const navigate = useNavigate();
   const {
     register, //btsheel el values ui inputs
@@ -19,10 +24,12 @@ export default function ResetPassRequest() {
 
   const onSubmit = (data) => {
     console.log(data);
+    setShowLoading(true);
     axios
       .post("https://upskilling-egypt.com:443/api/v1/Users/Reset/Request", data)
       .then((response) => {
         console.log(data);
+        setShowLoading(false);
         navigate("/reset-password");
         toast.success(
           response?.data?.message || "Code sent to your mail please check",
@@ -43,9 +50,13 @@ export default function ResetPassRequest() {
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
-  return (
+  
+  return showLoading ? (
+    <PreLoader/>
+  ) : (
     <div className="Auth-container container-fluid">
       <div className="row bg-overlay vh-100  justify-content-center align-items-center">
         <div className="col-md-6">
@@ -54,7 +65,7 @@ export default function ResetPassRequest() {
               <img src={logo} alt="logo" />
             </div>
             <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
-              <h2>Request Reset Password</h2>
+              <h3>Request Reset Password</h3>
               <p>Please Enter Your Email And Check Your Inbox</p>
               {/* email input */}
               <InputGroup className="mb-3">

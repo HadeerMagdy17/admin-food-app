@@ -7,9 +7,14 @@ import noData from "../../../assets/images/nodata.png";
 import NoData from "../../../SharedModule/Components/NoData/NoData";
 import {  toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
+
 export default function CategoriesList() {
   let [categoriesList, setCategoriesList] = useState([]);
   let [itemId, setItemId] = useState(0);
+
+    // *************preloader*******************
+    const [showLoading, setShowLoading] = useState(false);
 
   // //**************** to use more than one modal in same component**********
   const [modalState, setModalState] = useState("close");
@@ -33,6 +38,7 @@ export default function CategoriesList() {
  //****************delete category ***************************
 
   const deleteCategory = () => {
+    setShowLoading(true);
     axios.delete(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`,
     {
       headers: {
@@ -42,6 +48,7 @@ export default function CategoriesList() {
     ).then((response)=>{
       console.log(response);
       handleClose();
+      setShowLoading(false);
       getCategoryList();
       toast.success(
         response?.data?.message || "category deleted successfully",
@@ -59,18 +66,15 @@ export default function CategoriesList() {
         {
           position: "top-right",
           autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
           theme: "colored",
         }
       );
+      setShowLoading(false);
     })
   };
  //****************update category**********************
   const updateCategory=(data)=>{
+    setShowLoading(true);
     axios.put(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`,data,
     {
       headers: {
@@ -80,6 +84,7 @@ export default function CategoriesList() {
     ).then((response)=>{
       console.log(response);
       handleClose();
+      setShowLoading(false);
       getCategoryList();
       toast.success(
         response?.data?.message || "category updated successfully",
@@ -99,7 +104,9 @@ export default function CategoriesList() {
           autoClose: 3000,
           theme: "colored",
         }
-      );})
+      );
+      setShowLoading(false);
+    })
   }
 
   // //****************validation using useform**************
@@ -112,6 +119,7 @@ export default function CategoriesList() {
   // //****************api integration add categ*************
   let onSubmit = (data) => {
     console.log(data);
+    setShowLoading(true);
     axios
       .post("https://upskilling-egypt.com:443/api/v1/Category/", data, {
         headers: {
@@ -120,17 +128,13 @@ export default function CategoriesList() {
       })
       .then((response) => {
         handleClose();
+        setShowLoading(false);
         getCategoryList();
         toast.success(
           response?.data?.message || "category added successfully",
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );
@@ -143,18 +147,15 @@ export default function CategoriesList() {
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
  //****************get all category************************
   const getCategoryList = () => {
+    setShowLoading(true);
     //get categ
     axios
       .get(
@@ -167,6 +168,7 @@ export default function CategoriesList() {
       )
       .then((response) => {
         setCategoriesList(response?.data?.data);
+        setShowLoading(false);
       })
       .catch((error) => {
         console.log(error);
@@ -176,21 +178,19 @@ export default function CategoriesList() {
           {
             position: "top-right",
             autoClose: 3000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
             theme: "colored",
           }
         );
+        setShowLoading(false);
       });
   };
   useEffect(() => {
     //btcall data of categories
     getCategoryList();
   }, []);
-  return (
+  return showLoading ? (
+    <PreLoader/>
+  ) : (
     <>
       <Header>
         <div className="header-content text-white rounded">
