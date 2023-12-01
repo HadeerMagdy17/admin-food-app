@@ -8,17 +8,25 @@ import noData from "../../../assets/images/nodata.png";
 import recipeAlt from "../../../assets/images/recipe.png";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
+import Pagination from "react-bootstrap/Pagination";
 import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
 
 export default function RecipesList() {
   // *************preloader*******************
   const [showLoading, setShowLoading] = useState(false);
-
+  // ***********pagination***************
+  const [pagesArray, setPagesArray] = useState([]);
+  //  ***************************************
   let [recipesList, setRecipesList] = useState([]);
   let [itemId, setItemId] = useState(0);
   let [categoriesList, setCategoriesList] = useState([]);
   let [tagList, setTagList] = useState([]);
-  // let [file, setFile] = useState();
+  // *************filtration**************
+  let [searchString, setSearchString] = useState("");
+  let [selectedTagId, setSelectedTagId] = useState(0);
+  let [selectedCategoryId, setSelectedCategoryId] = useState(0);
   //*****************validation using useform***********************
   let {
     register,
@@ -32,8 +40,6 @@ export default function RecipesList() {
   const [modalState, setModalState] = useState("close");
   // ********to show add modal*******************
   const showAddModal = () => {
-    getCategoryList();
-    getAllTags();
     reset();
     setValue("tagId", null);
     setValue("categoriesIds", null);
@@ -56,8 +62,6 @@ export default function RecipesList() {
   // ********to show update modal*******************
   const showUpdateModal = (item) => {
     console.log(item);
-    getCategoryList();
-    getAllTags();
     setValue("name", item?.name);
     setValue("price", item?.price);
     setValue("description", item?.description);
@@ -208,19 +212,31 @@ export default function RecipesList() {
   };
 
   //****************get all Recipe****************************
-  const getAllRecipes = () => {
+  const getAllRecipes = (pageNo, name, tagId, categoryId) => {
     setShowLoading(true);
     axios
-      .get(
-        "https://upskilling-egypt.com:443/api/v1/Recipe/?pageSize=30&pageNumber=1",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          },
-        }
-      )
+      .get("https://upskilling-egypt.com:443/api/v1/Recipe/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+        params: {
+          pageSize: 5,
+          pageNumber: pageNo,
+          name: name,
+          tagId: tagId,
+          categoryId: categoryId
+
+        },
+        
+      })
       .then((response) => {
+        console.log(response);
         setRecipesList(response?.data?.data);
+        setPagesArray(
+          Array(response?.data?.totalNumberOfPages)
+            .fill()
+            .map((_, i) => i + 1)
+        );
         setShowLoading(false);
       })
       .catch((error) => {
@@ -278,8 +294,24 @@ export default function RecipesList() {
         setShowLoading(false);
       });
   };
+  // ******get name value user entered in search inp***********
+  const getNameValue = (e) => {
+    setSearchString(e.target.value);
+    getAllRecipes(1, e.target.value);
+  };
+  const getTagValue = (e) => {
+    setSelectedTagId(e.target.value);
+    getAllRecipes(1, searchString,e.target.value, selectedCategoryId);
+  };
+  const getCategoryValue = (e) => {
+    setSelectedCategoryId(e.target.value);
+    getAllRecipes(1, searchString, selectedTagId,e.target.value);
+  };
+  
 
   useEffect(() => {
+    getAllTags();
+    getCategoryList();
     getAllRecipes();
   }, []);
 
@@ -327,7 +359,7 @@ export default function RecipesList() {
           </Modal.Header>
           <Modal.Body>
             <p>Welcome Back! Please enter your details</p>
-            <form onSubmit={handleSubmit(addRecipe)}>
+            <form id="form7" onSubmit={handleSubmit(addRecipe)}>
               <div className="form-group">
                 <input
                   className="form-control"
@@ -450,7 +482,7 @@ export default function RecipesList() {
           </Modal.Header>
           <Modal.Body>
             <p>Welcome Back! Please enter your details</p>
-            <form onSubmit={handleSubmit(updateRecipe)}>
+            <form id="form8" onSubmit={handleSubmit(updateRecipe)}>
               <div className="form-group">
                 <input
                   className="form-control"
@@ -526,13 +558,14 @@ export default function RecipesList() {
                   className="form-control my-1 "
                   {...register("recipeImage")}
                 />
-                <img
+                {/* <img
                   className="w-25"
                   src={
-                    `https://upskilling-egypt.com:443/` + recipesList?.imagePath
+                    `https://upskilling-egypt.com:443/`
+                     + recipesList?.data?.data?.imagePath
                   }
                   alt="recipe image"
-                />
+                /> */}
               </div>
 
               <div className="text-end">
@@ -542,58 +575,136 @@ export default function RecipesList() {
           </Modal.Body>
         </Modal>
         {/* //*****************update modal******************** */}
+        {/* ****************start filtration********************** */}
+        <div className="filtration-group my-3">
+          <div className="row">
+            <div className="col-md-6">
+              {/* search input */}
+              <InputGroup>
+                <InputGroup.Text>
+                  <i className="fa-solid fa-magnifying-glass"></i>
+                </InputGroup.Text>
+                <Form.Control
+                  onChange={getNameValue}
+                  placeholder="Search by name ..."
+                  type="text"
+                />
+              </InputGroup>
+              {/* //search input */}
+            </div>
+            <div className="col-md-3">
+              {/* filter tag select */}
+              <select
+               onChange={getTagValue}
+                className="form-select "
+                aria-label="Default select example"
+              >
+                <option className="text-muted" value="">
+                  Tag Filter
+                </option>
+
+                {tagList?.map((tag) => (
+                  <option key={tag?.id} value={tag?.id}>
+                    {tag?.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+             <div className="col-md-3">
+              <select
+               onChange={getCategoryValue}
+                className="form-select "
+                aria-label="Default select example"
+              >
+                <option className="text-muted" value="">
+                  Category Filter
+                </option>
+
+                {categoriesList?.map((category) => (
+                  <option key={category?.id} value={category?.id}>
+                    {category?.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
         {recipesList?.length > 0 ? (
-          <table className="table">
-            <thead className="table-head table-success">
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Recipe Name</th>
-                <th scope="col">image</th>
-                <th scope="col">price</th>
-                <th scope="col">description</th>
-                <th scope="col">Category</th>
-                <th scope="col">Tag</th>
-                <th scope="col">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {recipesList.map((recipe, index) => (
-                <tr key={recipe?.id} className="table-light">
-                  <th scope="row">{index + 1}</th>
-                  <td>{recipe?.name}</td>
-                  <td>
-                    <div className="rec-image-container">
-                      {recipe.imagePath ? (
-                        <img
-                          className="w-100"
-                          src={
-                            `https://upskilling-egypt.com:443/` +
-                            recipe?.imagePath
-                          }
-                        />
-                      ) : (
-                        <img className="w-100" src={recipeAlt} />
-                      )}
-                    </div>
-                  </td>
-                  <td>{recipe?.price}</td>
-                  <td className="w-25">{recipe?.description}</td>
-                  <td>{recipe?.category[0]?.name}</td>
-                  <td>{recipe?.tag?.name}</td>
-                  <td>
-                    <i
-                      onClick={() => showUpdateModal(recipe)}
-                      className="fa fa-edit  text-success px-2"
-                    ></i>
-                    <i
-                      onClick={() => showDeleteModal(recipe.id)}
-                      className="fa fa-trash  text-danger"
-                    ></i>
-                  </td>
+          <div className="table-responsive">
+            <table className="table">
+              <thead className="table-head table-success">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Recipe Name</th>
+                  <th scope="col">image</th>
+                  <th scope="col">price</th>
+                  <th scope="col">description</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Tag</th>
+                  <th scope="col">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {recipesList.map((recipe, index) => (
+                  <tr key={recipe?.id} className="table-light">
+                    <th scope="row">{index + 1}</th>
+                    <td>{recipe?.name}</td>
+                    <td>
+                      <div className="rec-image-container">
+                        {recipe?.imagePath ? (
+                          <img
+                            className="w-100"
+                            src={
+                              `https://upskilling-egypt.com:443/` +
+                              recipe?.imagePath
+                            }
+                          />
+                        ) : (
+                          <img className="w-100" src={recipeAlt} />
+                        )}
+                      </div>
+                    </td>
+                    <td>{recipe?.price}</td>
+                    <td className="w-25">{recipe?.description}</td>
+                    <td>{recipe?.category[0]?.name}</td>
+                    <td>{recipe?.tag?.name}</td>
+                    <td>
+                      <i
+                        onClick={() => showUpdateModal(recipe)}
+                        className="fa fa-edit  text-success px-2"
+                      ></i>
+                      <i
+                        onClick={() => showDeleteModal(recipe.id)}
+                        className="fa fa-trash  text-danger"
+                      ></i>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {/******* * pagination *********/}
+            <div className="d-flex justify-content-center align-items-center mt-5">
+              <Pagination>
+                <Pagination.First />
+                <Pagination.Prev />
+
+                {pagesArray?.map((pageNo) => (
+                  <Pagination.Item
+                    key={pageNo}
+                    onClick={() => getAllRecipes(pageNo, searchString)}
+                  >
+                    {pageNo}
+                  </Pagination.Item>
+                ))}
+
+                <Pagination.Next />
+                <Pagination.Last />
+              </Pagination>
+            </div>
+
+            {/*******/
+            /* pagination *********/}
+          </div>
         ) : (
           <NoData />
         )}

@@ -65,7 +65,7 @@ export default function ResetPass() {
               <img src={logo} alt="logo" />
             </div>
 
-            <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
+            <form id="form3" className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h2>Reset Password</h2>
               <p>Please Enter Your Otp or Check Your Inbox</p>
 

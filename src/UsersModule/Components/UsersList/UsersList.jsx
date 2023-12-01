@@ -7,13 +7,19 @@ import noData from "../../../assets/images/nodata.png";
 import NoData from "../../../SharedModule/Components/NoData/NoData";
 import { toast } from "react-toastify";
 import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
-
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Pagination from "react-bootstrap/Pagination";
 export default function UsersList() {
   let [usersList, setUsersList] = useState([]);
   let [itemId, setItemId] = useState(0);
+  // ***********filtration****************
+  const[searchByName,setSearchByName]=useState("")
+  const[searchByEmail,setSearchByEmail]=useState("")
    // *************preloader*******************
    const [showLoading, setShowLoading] = useState(false);
-
+ // ***********pagination***************
+ const [pagesArray, setPagesArray] = useState([]);
   // //**************** to use more than one modal in same component**********
   const [modalState, setModalState] = useState("close");
   const showDeleteModal = (id) => {
@@ -60,20 +66,32 @@ export default function UsersList() {
   };
 
   //****************get all user************************
-  const getAllUsers = () => {
+  const getAllUsers = (pageNo,userName,email) => {
     setShowLoading(true);
     //get user
     axios
       .get(
-        "https://upskilling-egypt.com:443/api/v1/Users/?pageSize=10&pageNumber=1",
+        "https://upskilling-egypt.com:443/api/v1/Users/",
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+          params: {
+            pageSize: 5,
+            pageNumber: pageNo,
+            userName:userName,
+            email:email
+            
           },
         }
       )
       .then((response) => {
         console.log("userslist", response?.data?.data);
+        setPagesArray(
+          Array(response?.data?.totalNumberOfPages)
+            .fill()
+            .map((_, i) => i + 1)
+        );
         setShowLoading(false);
         setUsersList(response?.data?.data);
       })
@@ -90,6 +108,14 @@ export default function UsersList() {
         );
         setShowLoading(false);
       });
+  };
+  const getUserNameValue = (e) => {
+    setSearchByName(e.target.value);
+    getAllUsers(1, e.target.value,searchByEmail);
+  };
+  const getEmailValue = (e) => {
+    setSearchByEmail(e.target.value);
+    getAllUsers(1,searchByName, e.target.value);
   };
   useEffect(() => {
     getAllUsers();
@@ -149,7 +175,41 @@ export default function UsersList() {
         {/* //****************delete modal *****************/}
 
         <div>
+          {/* filtration */}
+        <div className="filtration-group my-3">
+          <div className="row">
+            <div className="col-md-6">
+              {/* search name input */}
+              <InputGroup>
+                <InputGroup.Text>
+                <i className="fa-regular fa-user"></i>
+                </InputGroup.Text>
+                <Form.Control
+                  onChange={getUserNameValue}
+                  placeholder="Search by name ..."
+                  type="text"
+                />
+              </InputGroup>
+              {/* //search by name input */}
+            </div>
+            <div className="col-md-6">
+              {/* filter by mail */}
+              <InputGroup>
+                <InputGroup.Text>
+                <i className="fa-solid fa-envelope-open-text"></i>
+                </InputGroup.Text>
+                <Form.Control
+                  onChange={getEmailValue}
+                  placeholder="Search by email ..."
+                  type="text"
+                />
+              </InputGroup>
+            </div>
+          
+          </div>
+        </div>
           {usersList.length > 0 ? (
+            <div> 
             <table className="table">
               <thead className="table-head table-success">
                 <tr>
@@ -157,6 +217,7 @@ export default function UsersList() {
                   <th scope="col">User Name</th>
                   <th scope="col">Image</th>
                   <th scope="col">Phone Number</th>
+                  <th scope="col">Email</th>
                   <th scope="col">Actions</th>
                 </tr>
               </thead>
@@ -182,6 +243,7 @@ export default function UsersList() {
                     </td>
 
                     <td>{user?.phoneNumber}</td>
+                    <td>{user?.email}</td>
                     <td>
                       <i
                         onClick={() => showDeleteModal(user.id)}
@@ -192,6 +254,28 @@ export default function UsersList() {
                 ))}
               </tbody>
             </table>
+               {/* ****** * pagination ******** */}
+               <div className="d-flex justify-content-center align-items-center mt-5">
+                 <Pagination>
+                   <Pagination.First />
+                   <Pagination.Prev />
+ 
+                   {pagesArray?.map((pageNo) => (
+                     <Pagination.Item 
+                       key={pageNo}
+                       onClick={() => getAllUsers(pageNo,searchByName,searchByEmail)}
+                     >
+                       {pageNo}
+                     </Pagination.Item>
+                   ))}
+ 
+                   <Pagination.Next />
+                   <Pagination.Last />
+                 </Pagination>
+               </div>
+ 
+               {/*******//* pagination *********/}
+              </div>
           ) : (
             <NoData />
           )}

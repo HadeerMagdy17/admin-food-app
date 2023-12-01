@@ -64,7 +64,7 @@ export default function ResetPassRequest() {
             <div className="logo-cont  text-center">
               <img src={logo} alt="logo" />
             </div>
-            <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
+            <form id="form4" className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h3>Request Reset Password</h3>
               <p>Please Enter Your Email And Check Your Inbox</p>
               {/* email input */}

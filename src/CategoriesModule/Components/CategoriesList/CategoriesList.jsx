@@ -5,22 +5,27 @@ import Modal from "react-bootstrap/Modal";
 import axios from "axios";
 import noData from "../../../assets/images/nodata.png";
 import NoData from "../../../SharedModule/Components/NoData/NoData";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
+import Form from "react-bootstrap/Form";
+import InputGroup from "react-bootstrap/InputGroup";
+import Pagination from "react-bootstrap/Pagination";
 
 export default function CategoriesList() {
   let [categoriesList, setCategoriesList] = useState([]);
   let [itemId, setItemId] = useState(0);
-
-    // *************preloader*******************
-    const [showLoading, setShowLoading] = useState(false);
-
+  // *************search**************
+  let [searchString, setSearchString] = useState("");
+  // *************preloader*******************
+  const [showLoading, setShowLoading] = useState(false);
+  // ***********pagination***************
+  const [pagesArray, setPagesArray] = useState([]);
   // //**************** to use more than one modal in same component**********
   const [modalState, setModalState] = useState("close");
 
   const showAddModal = () => {
-    setValue("name",null)
+    setValue("name", null);
     setModalState("add-modal");
   };
 
@@ -30,84 +35,86 @@ export default function CategoriesList() {
   };
   const showUpdateModal = (categoryObj) => {
     setItemId(categoryObj.id);
-    setValue("name",categoryObj.name)
+    setValue("name", categoryObj.name);
     setModalState("update-modal");
   };
   const handleClose = () => setModalState("close");
 
- //****************delete category ***************************
+  //****************delete category ***************************
 
   const deleteCategory = () => {
     setShowLoading(true);
-    axios.delete(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
-    }
-    ).then((response)=>{
-      console.log(response);
-      handleClose();
-      setShowLoading(false);
-      getCategoryList();
-      toast.success(
-        response?.data?.message || "category deleted successfully",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          theme: "colored",
-        }
-      );
-    
-    }).catch((error)=>{console.log(error)
-      toast.error(
-        error?.response?.data?.message ||
-          "An error occurred. Please try again.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          theme: "colored",
-        }
-      );
-      setShowLoading(false);
-    })
+    axios
+      .delete(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        handleClose();
+        setShowLoading(false);
+        getCategoryList();
+        toast.success(
+          response?.data?.message || "category deleted successfully",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "colored",
+          }
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(
+          error?.response?.data?.message ||
+            "An error occurred. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "colored",
+          }
+        );
+        setShowLoading(false);
+      });
   };
- //****************update category**********************
-  const updateCategory=(data)=>{
+  //****************update category**********************
+  const updateCategory = (data) => {
     setShowLoading(true);
-    axios.put(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`,data,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-      },
-    }
-    ).then((response)=>{
-      console.log(response);
-      handleClose();
-      setShowLoading(false);
-      getCategoryList();
-      toast.success(
-        response?.data?.message || "category updated successfully",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          theme: "colored",
-        }
-      );
-    
-    }).catch((error)=>{console.log(error)
-      toast.error(
-        error?.response?.data?.message ||
-          "An error occurred. Please try again.",
-        {
-          position: "top-right",
-          autoClose: 3000,
-          theme: "colored",
-        }
-      );
-      setShowLoading(false);
-    })
-  }
+    axios
+      .put(`https://upskilling-egypt.com:443/api/v1/Category/${itemId}`, data, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        handleClose();
+        setShowLoading(false);
+        getCategoryList();
+        toast.success(
+          response?.data?.message || "category updated successfully",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "colored",
+          }
+        );
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(
+          error?.response?.data?.message ||
+            "An error occurred. Please try again.",
+          {
+            position: "top-right",
+            autoClose: 3000,
+            theme: "colored",
+          }
+        );
+        setShowLoading(false);
+      });
+  };
 
   // //****************validation using useform**************
   let {
@@ -153,21 +160,28 @@ export default function CategoriesList() {
         setShowLoading(false);
       });
   };
- //****************get all category************************
-  const getCategoryList = () => {
+  //****************get all category************************
+  const getCategoryList = (pageNo, name) => {
     setShowLoading(true);
     //get categ
     axios
-      .get(
-        "https://upskilling-egypt.com:443/api/v1/Category/?pageSize=10&pageNumber=1",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          },
-        }
-      )
+      .get("https://upskilling-egypt.com:443/api/v1/Category/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+        params: {
+          pageSize: 5,
+          pageNumber: pageNo,
+          name: name,
+        },
+      })
       .then((response) => {
         setCategoriesList(response?.data?.data);
+        setPagesArray(
+          Array(response?.data?.totalNumberOfPages)
+            .fill()
+            .map((_, i) => i + 1)
+        );
         setShowLoading(false);
       })
       .catch((error) => {
@@ -184,19 +198,26 @@ export default function CategoriesList() {
         setShowLoading(false);
       });
   };
+  // ******get name value user entered in search inp***********
+  const getNameValue = (e) => {
+    setSearchString(e.target.value);
+    getCategoryList(1, e.target.value);
+  };
   useEffect(() => {
     //btcall data of categories
-    getCategoryList();
+    getCategoryList(1);
   }, []);
   return showLoading ? (
-    <PreLoader/>
+    <PreLoader />
   ) : (
     <>
       <Header>
         <div className="header-content text-white rounded">
           <div className="row align-items-center  m-2 p-3">
             <div className="col-md-10">
-              <h3 className="px-4"><strong>Categories Items !</strong></h3>
+              <h3 className="px-4">
+                <strong>Categories Items !</strong>
+              </h3>
               <p className="w-75 px-4">
                 You can now add your items that any user can order it from the
                 Application and you can edit
@@ -213,7 +234,9 @@ export default function CategoriesList() {
 
       <div className="row justify-content-between mx-4 p-3 ">
         <div className="col-md-6 px-4">
-          <h4><strong>Categories Table Details</strong></h4>
+          <h4>
+            <strong>Categories Table Details</strong>
+          </h4>
           <p>You can check all details</p>
         </div>
         <div className="col-md-6 text-end">
@@ -228,7 +251,7 @@ export default function CategoriesList() {
           </Modal.Header>
           <Modal.Body>
             <p>Welcome Back! Please enter your details</p>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form id="form5"onSubmit={handleSubmit(onSubmit)}>
               <div className="form-group">
                 <input
                   className="form-control"
@@ -246,14 +269,14 @@ export default function CategoriesList() {
         </Modal>
         {/* //add modal */}
 
-           {/* ****************update modal *****************/}
-           <Modal show={modalState == "update-modal"} onHide={handleClose}>
+        {/* ****************update modal *****************/}
+        <Modal show={modalState == "update-modal"} onHide={handleClose}>
           <Modal.Header closeButton>
             <h3>Update Category</h3>
           </Modal.Header>
           <Modal.Body>
             <p>Welcome Back! Please enter your details</p>
-            <form onSubmit={handleSubmit(updateCategory)}>
+            <form id="form6" onSubmit={handleSubmit(updateCategory)}>
               <div className="form-group">
                 <input
                   className="form-control"
@@ -296,32 +319,70 @@ export default function CategoriesList() {
         {/* ****************delete modal *****************/}
 
         <div>
+          {/* search input */}
+          <InputGroup className="my-3">
+            <InputGroup.Text>
+              <i className="fa-solid fa-magnifying-glass"></i>
+            </InputGroup.Text>
+            <Form.Control
+              onChange={getNameValue}
+              placeholder="Search by Category name ..."
+              type="text"
+            />
+          </InputGroup>
+
+          {/* //search input */}
           {categoriesList.length > 0 ? (
-            <table className="table">
-              <thead className="table-head table-success">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Category Name</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categoriesList.map((category) => (
-                  <tr key={category?.id}  className="table-light">
-                    <th scope="row">{category?.id}</th>
-                    <td>{category.name}</td>
-                    <td>
-                      <i onClick={()=>showUpdateModal(category)}
-                       className="fa fa-edit  text-success px-2"></i>
-                      <i
-                        onClick={()=>showDeleteModal(category.id)}
-                        className="fa fa-trash  text-danger"
-                      ></i>
-                    </td>
+            <div>
+              <table className="table">
+                <thead className="table-head table-success">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {categoriesList.map((category, index) => (
+                    <tr key={category?.id} className="table-light">
+                      <th scope="row">{index + 1}</th>
+                      <td>{category.name}</td>
+                      <td>
+                        <i
+                          onClick={() => showUpdateModal(category)}
+                          className="fa fa-edit  text-success px-2"
+                        ></i>
+                        <i
+                          onClick={() => showDeleteModal(category.id)}
+                          className="fa fa-trash  text-danger"
+                        ></i>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/******* * pagination *********/}
+              <div className="d-flex justify-content-center align-items-center mt-5">
+                <Pagination>
+                  <Pagination.First />
+                  <Pagination.Prev />
+
+                  {pagesArray?.map((pageNo) => (
+                    <Pagination.Item
+                      key={pageNo}
+                      onClick={() => getCategoryList(pageNo, searchString)}
+                    >
+                      {pageNo}
+                    </Pagination.Item>
+                  ))}
+
+                  <Pagination.Next />
+                  <Pagination.Last />
+                </Pagination>
+              </div>
+
+              {/*******//* pagination *********/}
+            </div>
           ) : (
             <NoData />
           )}

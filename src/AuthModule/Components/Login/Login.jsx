@@ -65,7 +65,7 @@ export default function Login({ saveAdminData }) {
             <div className="logo-cont  text-center">
               <img src={logo} alt="logo" />
             </div>
-            <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
+            <form id="form2" className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h2>Log In</h2>
               <p>Welcome Back! Please enter your details</p>
 

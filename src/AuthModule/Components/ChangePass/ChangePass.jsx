@@ -9,9 +9,18 @@ import PreLoader from "../../../SharedModule/Components/PreLoader/PreLoader";
 
 export default function ChangePass({ handleClose }) {
   // *************control show password**************
-  const [showPass, setShowPass] = useState(false);
+  const [showOldPass, setShowOldPass] = useState(false);
   const clickHandler = () => {
-    setShowPass(!showPass);
+    setShowOldPass(!showOldPass);
+  };
+
+  const [showNewPass, setShowNewPass] = useState(false);
+  const clickHandler1 = () => {
+    setShowNewPass(!showNewPass);
+  };
+  const [showConfirmNewPass, setShowConfirmNewPass] = useState(false);
+  const clickHandler2 = () => {
+    setShowConfirmNewPass(!showConfirmNewPass);
   };
  // *************preloader*******************
  const [showLoading, setShowLoading] = useState(false);
@@ -68,7 +77,7 @@ export default function ChangePass({ handleClose }) {
               <img src={logo} alt="logo" />
             </div>
 
-            <form className="w-75 m-auto" onSubmit={handleSubmit(onSubmit)}>
+            <form id="form1" className="w-100 m-auto" onSubmit={handleSubmit(onSubmit)}>
               <h4 className="my-2">Change Your Password</h4>
               <p>Enter your details below</p>
               {/*old password input */}
@@ -87,7 +96,7 @@ export default function ChangePass({ handleClose }) {
                 />
 
                 <InputGroup.Text onClick={clickHandler}>
-                  {showPass ? (
+                  {showOldPass ? (
                     <i className="fa-regular fa-eye-slash"></i>
                   ) : (
                     <i className="fa-regular fa-eye"></i>
@@ -115,8 +124,8 @@ export default function ChangePass({ handleClose }) {
                   })}
                 />
 
-                <InputGroup.Text onClick={clickHandler}>
-                  {showPass ? (
+                <InputGroup.Text onClick={clickHandler1}>
+                  {showNewPass ? (
                     <i className="fa-regular fa-eye-slash"></i>
                   ) : (
                     <i className="fa-regular fa-eye"></i>
@@ -145,8 +154,8 @@ export default function ChangePass({ handleClose }) {
                   })}
                 />
 
-                <InputGroup.Text onClick={clickHandler}>
-                  {showPass ? (
+                <InputGroup.Text onClick={clickHandler2}>
+                  {showConfirmNewPass ? (
                     <i className="fa-regular fa-eye-slash"></i>
                   ) : (
                     <i className="fa-regular fa-eye"></i>
