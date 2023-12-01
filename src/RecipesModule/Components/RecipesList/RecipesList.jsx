@@ -224,10 +224,8 @@ export default function RecipesList() {
           pageNumber: pageNo,
           name: name,
           tagId: tagId,
-          categoryId: categoryId
-
+          categoryId: categoryId,
         },
-        
       })
       .then((response) => {
         console.log(response);
@@ -297,17 +295,16 @@ export default function RecipesList() {
   // ******get name value user entered in search inp***********
   const getNameValue = (e) => {
     setSearchString(e.target.value);
-    getAllRecipes(1, e.target.value);
+    getAllRecipes(1, e.target.value, selectedTagId, selectedCategoryId);
   };
   const getTagValue = (e) => {
     setSelectedTagId(e.target.value);
-    getAllRecipes(1, searchString,e.target.value, selectedCategoryId);
+    getAllRecipes(1, searchString, e.target.value, selectedCategoryId);
   };
   const getCategoryValue = (e) => {
     setSelectedCategoryId(e.target.value);
-    getAllRecipes(1, searchString, selectedTagId,e.target.value);
+    getAllRecipes(1, searchString, selectedTagId, e.target.value);
   };
-  
 
   useEffect(() => {
     getAllTags();
@@ -435,7 +432,8 @@ export default function RecipesList() {
                   )}
               </div>
 
-              <div className="form-group ">
+              <div className="form-group my-2 ">
+             
                 <input
                   type="file"
                   className="form-control my-1 "
@@ -444,6 +442,7 @@ export default function RecipesList() {
                 />
               </div>
               {/* <img className="w-50" src={file} /> */}
+
               <div className="text-end">
                 <button className="btn btn-success  my-3">Add Recipe</button>
               </div>
@@ -558,14 +557,14 @@ export default function RecipesList() {
                   className="form-control my-1 "
                   {...register("recipeImage")}
                 />
-                {/* <img
+                {/* update */}
+                <img
                   className="w-25"
                   src={
-                    `https://upskilling-egypt.com:443/`
-                     + recipesList?.data?.data?.imagePath
+                    `https://upskilling-egypt.com:443/` + recipesList?.imagePath
                   }
                   alt="recipe image"
-                /> */}
+                />
               </div>
 
               <div className="text-end">
@@ -595,7 +594,7 @@ export default function RecipesList() {
             <div className="col-md-3">
               {/* filter tag select */}
               <select
-               onChange={getTagValue}
+                onChange={getTagValue}
                 className="form-select "
                 aria-label="Default select example"
               >
@@ -610,9 +609,9 @@ export default function RecipesList() {
                 ))}
               </select>
             </div>
-             <div className="col-md-3">
+            <div className="col-md-3">
               <select
-               onChange={getCategoryValue}
+                onChange={getCategoryValue}
                 className="form-select "
                 aria-label="Default select example"
               >
