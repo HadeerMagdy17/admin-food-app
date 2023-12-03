@@ -137,7 +137,6 @@ export default function Login({ saveAdminData }) {
               </div>
               <div className="form-group my-3">
                 <button disabled={load} 
-                // onClick={()=> { setLoad(true);  login().then(()=> setLoad(false)); }}
                className="btn btn-success w-100">Login</button>
               </div>
             </form>
