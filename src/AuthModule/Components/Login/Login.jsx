@@ -15,8 +15,6 @@ export default function Login({ saveAdminData }) {
   const clickHandler = () => {
     setShowPass(!showPass);
   };
-  // *************disabled loading in button*******************
-  const [load, setLoad] = useState(false);
   // *************preloader*******************
   const [showLoading, setShowLoading] = useState(false);
   const navigate = useNavigate();
@@ -29,13 +27,12 @@ export default function Login({ saveAdminData }) {
   //****************to login******************
   const onSubmit = (data) => {
     setShowLoading(true);
-    setLoad(true);//disable button
     axios
       .post("https://upskilling-egypt.com:443/api/v1/Users/Login", data)
       .then((response) => {
         localStorage.setItem("adminToken", response.data.token);
         saveAdminData();
-        setLoad(false)
+        
         setShowLoading(false);
         navigate("/dashboard"); //to home screen
 
@@ -136,7 +133,7 @@ export default function Login({ saveAdminData }) {
                 </Link>
               </div>
               <div className="form-group my-3">
-                <button disabled={load} 
+                <button
                className="btn btn-success w-100">Login</button>
               </div>
             </form>
