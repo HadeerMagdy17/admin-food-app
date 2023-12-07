@@ -51,7 +51,7 @@ function App() {
       ],
     },
     {
-      path: "/",
+      path: "/admin-food-app",
       element:<AuthLayout /> ,
       errorElement: <NotFound />,
       children: [
