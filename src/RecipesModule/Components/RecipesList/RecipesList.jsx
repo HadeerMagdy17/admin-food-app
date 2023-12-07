@@ -20,6 +20,7 @@ export default function RecipesList() {
   const [pagesArray, setPagesArray] = useState([]);
   //  ***************************************
   let [recipesList, setRecipesList] = useState([]);
+  let [recipe, setRecipe] = useState({});
   let [itemId, setItemId] = useState(0);
   let [categoriesList, setCategoriesList] = useState([]);
   let [tagList, setTagList] = useState([]);
@@ -47,12 +48,6 @@ export default function RecipesList() {
     setModalState("add-modal");
   };
 
-  // **********image preview**********
-  // function handleImgChange(e) {
-  //   console.log(e.target.files);
-  //   setFile(URL.createObjectURL(e.target.files[0]));
-  // }
-
   // ********to show delete modal*******************
 
   const showDeleteModal = (id) => {
@@ -70,6 +65,7 @@ export default function RecipesList() {
     setValue("imagePath", item?.imagePath);
 
     setItemId(item.id);
+    setRecipe(item)
     setModalState("update-modal");
   };
   // ********to close modal*******************
@@ -558,13 +554,18 @@ export default function RecipesList() {
                   {...register("recipeImage")}
                 />
                 {/* update */}
-                <img
-                  className="w-25"
-                  src={
-                    `https://upskilling-egypt.com:443/` + recipesList?.imagePath
-                  }
-                  alt="recipe image"
-                />
+                {recipe?.imagePath ? (
+                          <img
+                            className="w-25"
+                            src={
+                              `https://upskilling-egypt.com:443/` +
+                              recipe?.imagePath
+                            }
+                          />
+                        ) : (
+                          <img className="w-25" src={recipeAlt} />
+                        )}
+          
               </div>
 
               <div className="text-end">

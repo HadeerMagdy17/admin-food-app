@@ -14,12 +14,12 @@ export default function UsersList() {
   let [usersList, setUsersList] = useState([]);
   let [itemId, setItemId] = useState(0);
   // ***********filtration****************
-  const[searchByName,setSearchByName]=useState("")
-  const[searchByEmail,setSearchByEmail]=useState("")
-   // *************preloader*******************
-   const [showLoading, setShowLoading] = useState(false);
- // ***********pagination***************
- const [pagesArray, setPagesArray] = useState([]);
+  const [searchByName, setSearchByName] = useState("");
+  const [searchByEmail, setSearchByEmail] = useState("");
+  // *************preloader*******************
+  const [showLoading, setShowLoading] = useState(false);
+  // ***********pagination***************
+  const [pagesArray, setPagesArray] = useState([]);
   // //**************** to use more than one modal in same component**********
   const [modalState, setModalState] = useState("close");
   const showDeleteModal = (id) => {
@@ -66,25 +66,21 @@ export default function UsersList() {
   };
 
   //****************get all user************************
-  const getAllUsers = (pageNo,userName,email) => {
+  const getAllUsers = (pageNo, userName, email) => {
     setShowLoading(true);
     //get user
     axios
-      .get(
-        "https://upskilling-egypt.com:443/api/v1/Users/",
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          },
-          params: {
-            pageSize: 5,
-            pageNumber: pageNo,
-            userName:userName,
-            email:email
-            
-          },
-        }
-      )
+      .get("https://upskilling-egypt.com:443/api/v1/Users/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+        params: {
+          pageSize: 5,
+          pageNumber: pageNo,
+          userName: userName,
+          email: email,
+        },
+      })
       .then((response) => {
         console.log("userslist", response?.data?.data);
         setPagesArray(
@@ -111,24 +107,23 @@ export default function UsersList() {
   };
   const getUserNameValue = (e) => {
     setSearchByName(e.target.value);
-    getAllUsers(1, e.target.value,searchByEmail);
+    getAllUsers(1, e.target.value, searchByEmail);
   };
   const getEmailValue = (e) => {
     setSearchByEmail(e.target.value);
-    getAllUsers(1,searchByName, e.target.value);
+    getAllUsers(1, searchByName, e.target.value);
   };
   useEffect(() => {
     getAllUsers();
   }, []);
-  return showLoading ? (
-    <PreLoader/>
-  ) : (
-    <>
+  return(  <>
       <Header>
         <div className="header-content text-white rounded">
           <div className="row align-items-center  m-2 p-3">
             <div className="col-md-10">
-              <h3 className="px-4"><strong>Users Items</strong></h3>
+              <h3 className="px-4">
+                <strong>Users Items</strong>
+              </h3>
               <p className="w-75 px-4">
                 You can now add your items that any user can order it from the
                 Application and you can edit
@@ -145,7 +140,9 @@ export default function UsersList() {
 
       <div className="row justify-content-between mx-4 p-3 ">
         <div className="col-md-6 px-4">
-          <h4><strong>Users Table Details</strong></h4>
+          <h4>
+            <strong>Users Table Details</strong>
+          </h4>
           <p>You can check all details</p>
         </div>
 
@@ -176,109 +173,117 @@ export default function UsersList() {
 
         <div>
           {/* filtration */}
-        <div className="filtration-group my-3">
-          <div className="row">
-            <div className="col-md-6">
-              {/* search name input */}
-              <InputGroup>
-                <InputGroup.Text>
-                <i className="fa-regular fa-user"></i>
-                </InputGroup.Text>
-                <Form.Control
-                  onChange={getUserNameValue}
-                  placeholder="Search by name ..."
-                  type="text"
-                />
-              </InputGroup>
-              {/* //search by name input */}
-            </div>
-            <div className="col-md-6">
-              {/* filter by mail */}
-              <InputGroup>
-                <InputGroup.Text>
-                <i className="fa-solid fa-envelope-open-text"></i>
-                </InputGroup.Text>
-                <Form.Control
-                  onChange={getEmailValue}
-                  placeholder="Search by email ..."
-                  type="text"
-                />
-              </InputGroup>
-            </div>
-          
-          </div>
-        </div>
-          {usersList.length > 0 ? (
-            <div> 
-            <table className="table">
-              <thead className="table-head table-success">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">User Name</th>
-                  <th scope="col">Image</th>
-                  <th scope="col">Phone Number</th>
-                  <th scope="col">Email</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {usersList.map((user, index) => (
-                  <tr key={user?.id} className="table-light">
-                    <th scope="row">{index + 1}</th>
-                    <td>{user?.userName}</td>
-
-                    <td>
-                      <div className="image-container">
-                        {user?.imagePath ? (
-                          <img
-                            className="w-100"
-                            src={
-                              `https://upskilling-egypt.com/` + user?.imagePath
-                            }
-                          />
-                        ) : (
-                          <img className="w-100" src={noData} />
-                        )}
-                      </div>
-                    </td>
-
-                    <td>{user?.phoneNumber}</td>
-                    <td>{user?.email}</td>
-                    <td>
-                      <i
-                        onClick={() => showDeleteModal(user.id)}
-                        className="fa fa-trash  text-danger"
-                      ></i>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-               {/* ****** * pagination ******** */}
-               <div className="d-flex justify-content-center align-items-center mt-5">
-                 <Pagination>
-                   <Pagination.First />
-                   <Pagination.Prev />
- 
-                   {pagesArray?.map((pageNo) => (
-                     <Pagination.Item 
-                       key={pageNo}
-                       onClick={() => getAllUsers(pageNo,searchByName,searchByEmail)}
-                     >
-                       {pageNo}
-                     </Pagination.Item>
-                   ))}
- 
-                   <Pagination.Next />
-                   <Pagination.Last />
-                 </Pagination>
-               </div>
- 
-               {/*******//* pagination *********/}
+          <div className="filtration-group my-3">
+            <div className="row">
+              <div className="col-md-6">
+                {/* search name input */}
+                <InputGroup>
+                  <InputGroup.Text>
+                    <i className="fa-regular fa-user"></i>
+                  </InputGroup.Text>
+                  <Form.Control
+                    onChange={getUserNameValue}
+                    placeholder="Search by name ..."
+                    type="text"
+                  />
+                </InputGroup>
+                {/* //search by name input */}
               </div>
+              <div className="col-md-6">
+                {/* filter by mail */}
+                <InputGroup>
+                  <InputGroup.Text>
+                    <i className="fa-solid fa-envelope-open-text"></i>
+                  </InputGroup.Text>
+                  <Form.Control
+                    onChange={getEmailValue}
+                    placeholder="Search by email ..."
+                    type="text"
+                  />
+                </InputGroup>
+              </div>
+            </div>
+          </div>
+
+          {showLoading && <PreLoader/>}
+           
+          {usersList.length > 0 ? (
+            <div>
+              <table className="table">
+                <thead className="table-head table-success">
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">Image</th>
+                    <th scope="col">Phone Number</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {usersList.map((user, index) => (
+                    <tr key={user?.id} className="table-light">
+                      <th scope="row">{index + 1}</th>
+                      <td>{user?.userName}</td>
+
+                      <td>
+                        <div className="image-container">
+                          {user?.imagePath ? (
+                            <img
+                              className="w-100"
+                              src={
+                                `https://upskilling-egypt.com/` +
+                                user?.imagePath
+                              }
+                            />
+                          ) : (
+                            <img className="w-100" src={noData} />
+                          )}
+                        </div>
+                      </td>
+
+                      <td>{user?.phoneNumber}</td>
+                      <td>{user?.email}</td>
+                      <td>
+                        <i
+                          onClick={() => showDeleteModal(user.id)}
+                          className="fa fa-trash  text-danger"
+                        ></i>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {/* ****** * pagination ******** */}
+              <div className="d-flex justify-content-center align-items-center mt-5">
+                <Pagination>
+                  <Pagination.First />
+                  <Pagination.Prev />
+
+                  {pagesArray?.map((pageNo) => (
+                    <Pagination.Item
+                      key={pageNo}
+                      onClick={() =>
+                        getAllUsers(pageNo, searchByName, searchByEmail)
+                      }
+                    >
+                      {pageNo}
+                    </Pagination.Item>
+                  ))}
+
+                  <Pagination.Next />
+                  <Pagination.Last />
+                </Pagination>
+              </div>
+
+              {/*******/
+              /* pagination *********/}
+            </div>
           ) : (
             <NoData />
           )}
+        
+         
         </div>
       </div>
     </>
