@@ -57,7 +57,7 @@ export default function Login({ saveAdminData }) {
   };
 
   return showLoading ? (
-    <PreLoader/>
+   <div className="prePosition"> <PreLoader/></div>
   ) : (
     <div className="Auth-container container-fluid">
       <div className="row bg-overlay vh-100 justify-content-center align-items-center">

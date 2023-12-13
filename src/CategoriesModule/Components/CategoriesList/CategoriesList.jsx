@@ -207,9 +207,7 @@ export default function CategoriesList() {
     //btcall data of categories
     getCategoryList(1);
   }, []);
-  return showLoading ? (
-    <PreLoader />
-  ) : (
+  return (
     <>
       <Header>
         <div className="header-content text-white rounded">
@@ -251,7 +249,7 @@ export default function CategoriesList() {
           </Modal.Header>
           <Modal.Body>
             <p>Welcome Back! Please enter your details</p>
-            <form id="form5"onSubmit={handleSubmit(onSubmit)}>
+            <form id="form5" onSubmit={handleSubmit(onSubmit)}>
               <div className="form-group">
                 <input
                   className="form-control"
@@ -263,7 +261,19 @@ export default function CategoriesList() {
                   <span className="m-2 text-danger">field is required</span>
                 )}
               </div>
-              <button className="btn btn-success w-100 my-3">Save</button>
+              <button
+                type="submit"
+                className={
+                  "btn btn-success w-100 my-3" +
+                  (showLoading ? " disabled" : " ")
+                }
+              >
+                {showLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Save"
+                )}
+              </button>
             </form>
           </Modal.Body>
         </Modal>
@@ -288,7 +298,19 @@ export default function CategoriesList() {
                   <span className="m-2 text-danger">field is required</span>
                 )}
               </div>
-              <button className="btn btn-success w-100 my-3">update</button>
+              <button
+                type="submit"
+                className={
+                  "btn btn-success w-100 my-3" +
+                  (showLoading ? " disabled" : " ")
+                }
+              >
+                {showLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Update"
+                )}
+              </button>
             </form>
           </Modal.Body>
         </Modal>
@@ -309,9 +331,16 @@ export default function CategoriesList() {
             <div className="text-end">
               <button
                 onClick={deleteCategory}
-                className="btn btn-outline-danger  my-3"
+                className={
+                  "btn btn-outline-danger my-3" +
+                  (showLoading ? " disabled" : "")
+                }
               >
-                Delete this item
+                {showLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Delete this item"
+                )}
               </button>
             </div>
           </Modal.Body>
@@ -332,59 +361,66 @@ export default function CategoriesList() {
           </InputGroup>
 
           {/* //search input */}
-          {categoriesList.length > 0 ? (
-            <div>
-              <table className="table">
-                <thead className="table-head table-success">
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Category Name</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categoriesList.map((category, index) => (
-                    <tr key={category?.id} className="table-light">
-                      <th scope="row">{index + 1}</th>
-                      <td>{category.name}</td>
-                      <td>
-                        <i
-                          onClick={() => showUpdateModal(category)}
-                          className="fa fa-edit  text-success px-2"
-                        ></i>
-                        <i
-                          onClick={() => showDeleteModal(category.id)}
-                          className="fa fa-trash  text-danger"
-                        ></i>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/******* * pagination *********/}
-              <div className="d-flex justify-content-center align-items-center mt-5">
-                <Pagination>
-                  <Pagination.First />
-                  <Pagination.Prev />
+          {!showLoading ? (
+            <>
+              {categoriesList.length > 0 ? (
+                <div>
+                  <table className="table">
+                    <thead className="table-head table-success">
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Category Name</th>
+                        <th scope="col">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {categoriesList.map((category, index) => (
+                        <tr key={category?.id} className="table-light">
+                          <th scope="row">{index + 1}</th>
+                          <td>{category.name}</td>
+                          <td>
+                            <i
+                              onClick={() => showUpdateModal(category)}
+                              className="fa fa-edit  text-success px-2"
+                            ></i>
+                            <i
+                              onClick={() => showDeleteModal(category.id)}
+                              className="fa fa-trash  text-danger"
+                            ></i>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  {/******* * pagination *********/}
+                  <div className="d-flex justify-content-center align-items-center mt-5">
+                    <Pagination>
+                      <Pagination.First />
+                      <Pagination.Prev />
 
-                  {pagesArray?.map((pageNo) => (
-                    <Pagination.Item
-                      key={pageNo}
-                      onClick={() => getCategoryList(pageNo, searchString)}
-                    >
-                      {pageNo}
-                    </Pagination.Item>
-                  ))}
+                      {pagesArray?.map((pageNo) => (
+                        <Pagination.Item
+                          key={pageNo}
+                          onClick={() => getCategoryList(pageNo, searchString)}
+                        >
+                          {pageNo}
+                        </Pagination.Item>
+                      ))}
 
-                  <Pagination.Next />
-                  <Pagination.Last />
-                </Pagination>
-              </div>
+                      <Pagination.Next />
+                      <Pagination.Last />
+                    </Pagination>
+                  </div>
 
-              {/*******//* pagination *********/}
-            </div>
+                  {/*******/
+                  /* pagination *********/}
+                </div>
+              ) : (
+                <NoData />
+              )}
+            </>
           ) : (
-            <NoData />
+            <PreLoader />
           )}
         </div>
       </div>

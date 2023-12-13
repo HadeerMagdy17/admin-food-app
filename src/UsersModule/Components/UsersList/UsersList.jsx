@@ -160,11 +160,18 @@ export default function UsersList() {
               </p>
             </div>
             <div className="text-end">
-              <button
+            <button
                 onClick={deleteUser}
-                className="btn btn-outline-danger  my-3"
+                className={
+                  "btn btn-outline-danger my-3" +
+                  (showLoading ? " disabled" : "")
+                }
               >
-                Delete this item
+                {showLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Delete this item"
+                )}
               </button>
             </div>
           </Modal.Body>
@@ -205,83 +212,88 @@ export default function UsersList() {
             </div>
           </div>
 
-          {showLoading && <PreLoader/>}
-           
-          {usersList.length > 0 ? (
-            <div>
-              <table className="table">
-                <thead className="table-head table-success">
-                  <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">User Name</th>
-                    <th scope="col">Image</th>
-                    <th scope="col">Phone Number</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {usersList.map((user, index) => (
-                    <tr key={user?.id} className="table-light">
-                      <th scope="row">{index + 1}</th>
-                      <td>{user?.userName}</td>
-
-                      <td>
-                        <div className="image-container">
-                          {user?.imagePath ? (
-                            <img
-                              className="w-100"
-                              src={
-                                `https://upskilling-egypt.com/` +
-                                user?.imagePath
-                              }
-                            />
-                          ) : (
-                            <img className="w-100" src={noData} />
-                          )}
-                        </div>
-                      </td>
-
-                      <td>{user?.phoneNumber}</td>
-                      <td>{user?.email}</td>
-                      <td>
-                        <i
-                          onClick={() => showDeleteModal(user.id)}
-                          className="fa fa-trash  text-danger"
-                        ></i>
-                      </td>
+           {!showLoading ?
+           <>
+             {usersList.length > 0 ? (
+              <div>
+                <table className="table">
+                  <thead className="table-head table-success">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">User Name</th>
+                      <th scope="col">Image</th>
+                      <th scope="col">Phone Number</th>
+                      <th scope="col">Email</th>
+                      <th scope="col">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-              {/* ****** * pagination ******** */}
-              <div className="d-flex justify-content-center align-items-center mt-5">
-                <Pagination>
-                  <Pagination.First />
-                  <Pagination.Prev />
-
-                  {pagesArray?.map((pageNo) => (
-                    <Pagination.Item
-                      key={pageNo}
-                      onClick={() =>
-                        getAllUsers(pageNo, searchByName, searchByEmail)
-                      }
-                    >
-                      {pageNo}
-                    </Pagination.Item>
-                  ))}
-
-                  <Pagination.Next />
-                  <Pagination.Last />
-                </Pagination>
+                  </thead>
+                  <tbody>
+                    {usersList.map((user, index) => (
+                      <tr key={user?.id} className="table-light">
+                        <th scope="row">{index + 1}</th>
+                        <td>{user?.userName}</td>
+  
+                        <td>
+                          <div className="image-container">
+                            {user?.imagePath ? (
+                              <img
+                                className="w-100"
+                                src={
+                                  `https://upskilling-egypt.com/` +
+                                  user?.imagePath
+                                }
+                              />
+                            ) : (
+                              <img className="w-100" src={noData} />
+                            )}
+                          </div>
+                        </td>
+  
+                        <td>{user?.phoneNumber}</td>
+                        <td>{user?.email}</td>
+                        <td>
+                          <i
+                            onClick={() => showDeleteModal(user.id)}
+                            className="fa fa-trash  text-danger"
+                          ></i>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {/* ****** * pagination ******** */}
+                <div className="d-flex justify-content-center align-items-center mt-5">
+                  <Pagination>
+                    <Pagination.First />
+                    <Pagination.Prev/>
+  
+                    {pagesArray?.map((pageNo) => (
+                      <Pagination.Item
+                        key={pageNo}
+                        onClick={() =>
+                          getAllUsers(pageNo, searchByName, searchByEmail)
+                        }
+                      >
+                        {pageNo}
+                      </Pagination.Item>
+                    ))}
+  
+                    <Pagination.Next/>
+                    <Pagination.Last />
+                  </Pagination>
+                </div>
+  
+                {/*******/
+                /* pagination *********/}
               </div>
-
-              {/*******/
-              /* pagination *********/}
-            </div>
-          ) : (
-            <NoData />
-          )}
+            ) : (
+              <NoData />
+            )
+            }
+            </>
+          :<PreLoader/>
+          }
+        
         
          
         </div>

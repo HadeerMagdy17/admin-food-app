@@ -65,7 +65,7 @@ export default function RecipesList() {
     setValue("imagePath", item?.imagePath);
 
     setItemId(item.id);
-    setRecipe(item)
+    setRecipe(item);
     setModalState("update-modal");
   };
   // ********to close modal*******************
@@ -308,9 +308,7 @@ export default function RecipesList() {
     getAllRecipes();
   }, []);
 
-  return showLoading ? (
-    <PreLoader />
-  ) : (
+  return  (
     <>
       <Header>
         <div className="header-content text-white rounded">
@@ -429,18 +427,29 @@ export default function RecipesList() {
               </div>
 
               <div className="form-group my-2 ">
-             
                 <input
                   type="file"
                   className="form-control my-1 "
-                  // onChange={handleImgChange}
+                  
                   {...register("recipeImage")}
                 />
               </div>
-              {/* <img className="w-50" src={file} /> */}
+             
 
               <div className="text-end">
-                <button className="btn btn-success  my-3">Add Recipe</button>
+              <button
+                type="submit"
+                className={
+                  "btn btn-success" + (showLoading ? " disabled" : " ")
+                }
+              >
+                {showLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Add Recipe"
+                )}
+              </button>
+              
               </div>
             </form>
           </Modal.Body>
@@ -462,9 +471,15 @@ export default function RecipesList() {
             <div className="text-end">
               <button
                 onClick={deleteRecipe}
-                className="btn btn-outline-danger  my-3"
+                className={
+                  "btn btn-outline-danger my-3" + (showLoading ? " disabled" : "")
+                }
               >
-                Delete this item
+                {showLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Delete this item"
+                )}
               </button>
             </div>
           </Modal.Body>
@@ -555,21 +570,31 @@ export default function RecipesList() {
                 />
                 {/* update */}
                 {recipe?.imagePath ? (
-                          <img
-                            className="w-25"
-                            src={
-                              `https://upskilling-egypt.com:443/` +
-                              recipe?.imagePath
-                            }
-                          />
-                        ) : (
-                          <img className="w-25" src={recipeAlt} />
-                        )}
-          
+                  <img
+                    className="w-25"
+                    src={
+                      `https://upskilling-egypt.com:443/` + recipe?.imagePath
+                    }
+                  />
+                ) : (
+                  <img className="w-25" src={recipeAlt} />
+                )}
               </div>
 
               <div className="text-end">
-                <button className="btn btn-success  my-3">update Recipe</button>
+              <button
+                type="submit"
+                className={
+                  "btn btn-success" + (showLoading ? " disabled" : " ")
+                }
+              >
+                {showLoading == true ? (
+                  <i className="fas fa-spinner fa-spin"></i>
+                ) : (
+                  "Update Recipe"
+                )}
+              </button>
+              
               </div>
             </form>
           </Modal.Body>
@@ -629,84 +654,90 @@ export default function RecipesList() {
             </div>
           </div>
         </div>
-        {recipesList?.length > 0 ? (
-          <div className="table-responsive">
-            <table className="table">
-              <thead className="table-head table-success">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Recipe Name</th>
-                  <th scope="col">image</th>
-                  <th scope="col">price</th>
-                  <th scope="col">description</th>
-                  <th scope="col">Category</th>
-                  <th scope="col">Tag</th>
-                  <th scope="col">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {recipesList.map((recipe, index) => (
-                  <tr key={recipe?.id} className="table-light">
-                    <th scope="row">{index + 1}</th>
-                    <td>{recipe?.name}</td>
-                    <td>
-                      <div className="rec-image-container">
-                        {recipe?.imagePath ? (
-                          <img
-                            className="w-100"
-                            src={
-                              `https://upskilling-egypt.com:443/` +
-                              recipe?.imagePath
-                            }
-                          />
-                        ) : (
-                          <img className="w-100" src={recipeAlt} />
-                        )}
-                      </div>
-                    </td>
-                    <td>{recipe?.price}</td>
-                    <td className="w-25">{recipe?.description}</td>
-                    <td>{recipe?.category[0]?.name}</td>
-                    <td>{recipe?.tag?.name}</td>
-                    <td>
-                      <i
-                        onClick={() => showUpdateModal(recipe)}
-                        className="fa fa-edit  text-success px-2"
-                      ></i>
-                      <i
-                        onClick={() => showDeleteModal(recipe.id)}
-                        className="fa fa-trash  text-danger"
-                      ></i>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {/******* * pagination *********/}
-            <div className="d-flex justify-content-center align-items-center mt-5">
-              <Pagination>
-                <Pagination.First />
-                <Pagination.Prev />
+        {!showLoading ? (
+          <>
+            {recipesList?.length > 0 ? (
+              <div className="table-responsive">
+                <table className="table">
+                  <thead className="table-head table-success">
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Recipe Name</th>
+                      <th scope="col">image</th>
+                      <th scope="col">price</th>
+                      <th scope="col">description</th>
+                      <th scope="col">Category</th>
+                      <th scope="col">Tag</th>
+                      <th scope="col">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recipesList.map((recipe, index) => (
+                      <tr key={recipe?.id} className="table-light">
+                        <th scope="row">{index + 1}</th>
+                        <td>{recipe?.name}</td>
+                        <td>
+                          <div className="rec-image-container">
+                            {recipe?.imagePath ? (
+                              <img
+                                className="w-100"
+                                src={
+                                  `https://upskilling-egypt.com:443/` +
+                                  recipe?.imagePath
+                                }
+                              />
+                            ) : (
+                              <img className="w-100" src={recipeAlt} />
+                            )}
+                          </div>
+                        </td>
+                        <td>{recipe?.price}</td>
+                        <td className="w-25">{recipe?.description}</td>
+                        <td>{recipe?.category[0]?.name}</td>
+                        <td>{recipe?.tag?.name}</td>
+                        <td>
+                          <i
+                            onClick={() => showUpdateModal(recipe)}
+                            className="fa fa-edit  text-success px-2"
+                          ></i>
+                          <i
+                            onClick={() => showDeleteModal(recipe.id)}
+                            className="fa fa-trash  text-danger"
+                          ></i>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {/******* * pagination *********/}
+                <div className="d-flex justify-content-center align-items-center mt-5">
+                  <Pagination>
+                    <Pagination.First />
+                    <Pagination.Prev />
 
-                {pagesArray?.map((pageNo) => (
-                  <Pagination.Item
-                    key={pageNo}
-                    onClick={() => getAllRecipes(pageNo, searchString)}
-                  >
-                    {pageNo}
-                  </Pagination.Item>
-                ))}
+                    {pagesArray?.map((pageNo) => (
+                      <Pagination.Item
+                        key={pageNo}
+                        onClick={() => getAllRecipes(pageNo, searchString)}
+                      >
+                        {pageNo}
+                      </Pagination.Item>
+                    ))}
 
-                <Pagination.Next />
-                <Pagination.Last />
-              </Pagination>
-            </div>
+                    <Pagination.Next />
+                    <Pagination.Last />
+                  </Pagination>
+                </div>
 
-            {/*******/
-            /* pagination *********/}
-          </div>
+                {/*******/
+                /* pagination *********/}
+              </div>
+            ) : (
+              <NoData />
+            )}
+          </>
         ) : (
-          <NoData />
+          <PreLoader />
         )}
       </div>
     </>

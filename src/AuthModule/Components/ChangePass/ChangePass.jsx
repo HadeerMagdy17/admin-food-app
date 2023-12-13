@@ -22,8 +22,8 @@ export default function ChangePass({ handleClose }) {
   const clickHandler2 = () => {
     setShowConfirmNewPass(!showConfirmNewPass);
   };
- // *************preloader*******************
- const [showLoading, setShowLoading] = useState(false);
+  // *************preloader*******************
+  const [showLoading, setShowLoading] = useState(false);
   //****************use form to validate**********
   const {
     register, //btsheel el values ui inputs
@@ -66,8 +66,8 @@ export default function ChangePass({ handleClose }) {
       });
   };
 
-   return showLoading ? (
-    <PreLoader/>
+  return showLoading ? (
+    <PreLoader />
   ) : (
     <div className=" container-fluid">
       <div className="row  justify-content-center align-items-center">
@@ -77,7 +77,11 @@ export default function ChangePass({ handleClose }) {
               <img src={logo} alt="logo" />
             </div>
 
-            <form id="form1" className="w-100 m-auto" onSubmit={handleSubmit(onSubmit)}>
+            <form
+              id="form1"
+              className="w-100 m-auto"
+              onSubmit={handleSubmit(onSubmit)}
+            >
               <h4 className="my-2">Change Your Password</h4>
               <p>Enter your details below</p>
               {/*old password input */}
@@ -171,8 +175,17 @@ export default function ChangePass({ handleClose }) {
               {/* //confirm new password */}
 
               <div className="form-group my-3">
-                <button className="btn btn-success w-100">
-                  Change Password
+                <button
+                  type="submit"
+                  className={
+                    "btn btn-success w-100" + (showLoading ? " disabled" : " ")
+                  }
+                >
+                  {showLoading == true ? (
+                    <i className="fas fa-spinner fa-spin"></i>
+                  ) : (
+                    "Change Password"
+                  )}
                 </button>
               </div>
             </form>
