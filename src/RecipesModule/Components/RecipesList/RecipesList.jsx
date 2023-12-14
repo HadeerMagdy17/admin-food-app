@@ -324,7 +324,7 @@ export default function RecipesList() {
             </div>
             <div className="col-md-2">
               <div>
-                <img src={headerImg} className="img-fluid" alt="header" />
+                <img src={headerImg} className="headerImg img-fluid" alt="header" />
               </div>
             </div>
           </div>

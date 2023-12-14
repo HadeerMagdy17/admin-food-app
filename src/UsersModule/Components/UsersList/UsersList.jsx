@@ -114,7 +114,11 @@ export default function UsersList() {
     getAllUsers(1, searchByName, e.target.value);
   };
   useEffect(() => {
-    getAllUsers();
+    const timerId = setTimeout(()=>{
+      getAllUsers();
+    },500)
+    return ()=> clearTimeout(timerId)
+    
   }, []);
   return(  <>
       <Header>
@@ -131,7 +135,7 @@ export default function UsersList() {
             </div>
             <div className="col-md-2">
               <div>
-                <img src={headerImg} className="img-fluid" alt="header" />
+                <img src={headerImg} className="headerImg img-fluid" alt="header" />
               </div>
             </div>
           </div>
